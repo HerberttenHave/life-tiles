@@ -1,0 +1,12 @@
+# Your own photos and stories never go to GitHub
+content/
+dist/
+werk/
+bron/
+demo-content/
+*.zip
+!app/voorbeeld-1.zip
+functions/node_modules/
+functions/.env
+.firebase/
+__pycache__/
