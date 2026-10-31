@@ -12,7 +12,7 @@ Life Tiles turns the photos and life story of a parent or grandparent into a cal
 
 - **Offline and private.** Photos stay on the tablet. The app online is an empty shell; you load your own package into it.
 - **Made for older people.** Large buttons, few choices, and the slideshow starts by itself when nobody touches the tablet.
-- **No programming.** Fill in an Excel file, put photos in folders and run one command.
+- **No programming.** Make the book on the tablet itself, or for big books fill in an Excel file, put photos in folders and run one command.
 - **Map** of all the places in their life, also offline.
 - **Questions per chapter** with a checked answer that the tablet reads aloud. Optionally, ask your own question by voice.
 - **English and Dutch**, chosen per book.
@@ -49,7 +49,7 @@ Life Tiles maakt van de foto's en het levensverhaal van een ouder of grootouder 
 
 - **Offline en privé.** De foto's staan alleen op de tablet. De app op internet is een lege huls; je laadt je eigen pakket in.
 - **Gemaakt voor ouderen.** Grote knoppen, weinig keuzes, de diashow start vanzelf als niemand de tablet aanraakt.
-- **Zonder programmeren.** Je vult een Excel-bestand in, zet foto's in mappen en draait één opdracht.
+- **Zonder programmeren.** Maak het boek op de tablet zelf, of vul voor grote boeken een Excel-bestand in, zet foto's in mappen en draai één opdracht.
 - **Kaart** met alle plekken uit het leven, ook zonder internet.
 - **Vragen per hoofdstuk** met een nagezocht antwoord dat de tablet voorleest. Optioneel ook zelf een vraag inspreken.
 - **Nederlands en Engels**, te kiezen per boek.

@@ -1,5 +1,5 @@
 /* Caches the app shell so it opens without internet. Photos live in IndexedDB. */
-const CACHE = 'lifetiles-v2';
+const CACHE = 'lifetiles-v3';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'config.js', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png',
   'vendor/jszip.min.js', 'vendor/d3-array.min.js', 'vendor/d3-geo.min.js', 'vendor/topojson-client.min.js', 'vendor/countries-50m.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });

@@ -1,6 +1,7 @@
 /* Life Tiles: offline photo and life-story app for a 10-inch tablet.
-   All content lives in IndexedDB on the tablet, imported once from a .zip
-   built by tools/build_content.py. Nothing is sent anywhere. */
+   All content lives in IndexedDB on the tablet: imported from a .zip built by
+   tools/build_content.py, or made on the tablet itself with the book maker.
+   Nothing is sent anywhere, except optional place lookups in the book maker. */
 (() => {
 'use strict';
 
@@ -35,6 +36,25 @@ const TEXTS = {
     demoMissing: 'Example not found', wipeConfirm: 'Are you sure you want to erase all photos and stories from this tablet?',
     noBook: 'No life book found: choose all parts at once (…-1.zip, …-2.zip, ...).',
     missingParts: (a, b) => `Some parts are missing: ${a} of ${b} chosen. Choose them all at once.`,
+    make: 'Make a new book on this tablet', edit: 'Change this book', makerTitle: 'Book maker',
+    newConfirm: 'Start a new, empty book? The book now on this tablet will be erased. Save a copy first if you want to keep it.',
+    aboutBook: 'About the book', autoSaved: 'Everything is saved on this tablet straight away.',
+    fTitle: 'Title at the top of the screen', fName: 'Name under the portrait', fSub: 'Line under the name, for example: born 12 March 1937 in Dordrecht',
+    fLang: 'Language of the buttons and the reading voice', portrait: 'Portrait photo', pickPortrait: 'Choose a portrait photo',
+    chapters: 'Chapters', nChapters: n => n === 1 ? '1 chapter' : `${n} chapters`, addChapter: '+ Add a chapter',
+    noChapters: 'No chapters yet. Tap the button above to add the first one.',
+    fChTitle: 'Title', fChName: 'Name', fBorn: 'Born (year or date)', fPlace: 'Town or place', fCountry: 'Country',
+    fFrom: 'From (year)', fTo: 'To (year)', fStory: 'Story', storyHelp: 'Leave an empty line to start a new paragraph.',
+    photos: 'Photos', addPhotos: '+ Add photos from this tablet', caption: 'Caption (may be empty)', removePhoto: '✕ Remove',
+    firstPhoto: 'First photo, shown on the tile', makeFirst: 'Show first',
+    preparing: (a, b) => `Preparing photos: ${a} of ${b}`, skipped: n => `${n} file(s) could not be read and were skipped.`,
+    location: 'Place on the map', findPlace: '🔍 Find on the map', finding: 'Looking it up...',
+    found: n => `Found: ${n}`, notFound: 'Not found. Check the spelling, or fill in the numbers by hand.',
+    geoFail: 'Looking up needs internet. You can also fill in the numbers by hand.', lat: 'Latitude', lon: 'Longitude',
+    geoNote: 'Find on the map sends only the place and country to OpenStreetMap. Nothing else leaves this tablet.',
+    deleteChapter: 'Delete this chapter', deleteConfirm: 'Delete this chapter and its photos?', untitled: '(no title yet)',
+    viewBook: 'View the book', exportZip: 'Save a copy (.zip)', exporting: 'Making the copy...',
+    exportHelp: 'The copy goes to the Downloads folder. Keep it safe, or load it on another tablet with "Load a life book".',
   },
   nl: {
     speech: 'nl-NL', sort: 'nl',
@@ -53,6 +73,25 @@ const TEXTS = {
     demoMissing: 'Voorbeeld niet gevonden', wipeConfirm: 'Weet je zeker dat je alle foto’s en verhalen van deze tablet wilt wissen?',
     noBook: 'Geen levensboek gevonden: kies alle delen tegelijk (…-1.zip, …-2.zip, ...).',
     missingParts: (a, b) => `Er ontbreken delen: ${a} van ${b} gekozen. Kies ze allemaal tegelijk.`,
+    make: 'Nieuw boek maken op deze tablet', edit: 'Dit boek aanpassen', makerTitle: 'Boek maken',
+    newConfirm: 'Een nieuw, leeg boek beginnen? Het boek dat nu op deze tablet staat wordt gewist. Bewaar eerst een kopie als je het wilt houden.',
+    aboutBook: 'Over het boek', autoSaved: 'Alles wordt meteen op deze tablet bewaard.',
+    fTitle: 'Titel bovenaan het scherm', fName: 'Naam onder het portret', fSub: 'Regel onder de naam, bijvoorbeeld: geboren 12 maart 1937 in Dordrecht',
+    fLang: 'Taal van de knoppen en de voorleesstem', portrait: 'Portretfoto', pickPortrait: 'Kies een portretfoto',
+    chapters: 'Hoofdstukken', nChapters: n => n === 1 ? '1 hoofdstuk' : `${n} hoofdstukken`, addChapter: '+ Hoofdstuk toevoegen',
+    noChapters: 'Nog geen hoofdstukken. Tik op de knop hierboven om het eerste toe te voegen.',
+    fChTitle: 'Titel', fChName: 'Naam', fBorn: 'Geboren (jaar of datum)', fPlace: 'Plaats', fCountry: 'Land',
+    fFrom: 'Van (jaar)', fTo: 'Tot (jaar)', fStory: 'Verhaal', storyHelp: 'Laat een regel leeg om een nieuwe alinea te beginnen.',
+    photos: "Foto's", addPhotos: "+ Foto's van deze tablet toevoegen", caption: 'Onderschrift (mag leeg)', removePhoto: '✕ Weghalen',
+    firstPhoto: 'Eerste foto, staat op de tegel', makeFirst: 'Als eerste',
+    preparing: (a, b) => `Foto's klaarmaken: ${a} van ${b}`, skipped: n => `${n} bestand(en) konden niet gelezen worden en zijn overgeslagen.`,
+    location: 'Plek op de kaart', findPlace: '🔍 Zoek op de kaart', finding: 'Even zoeken...',
+    found: n => `Gevonden: ${n}`, notFound: 'Niet gevonden. Kijk de spelling na, of vul de getallen zelf in.',
+    geoFail: 'Zoeken lukt alleen met internet. Je kunt de getallen ook zelf invullen.', lat: 'Breedtegraad', lon: 'Lengtegraad',
+    geoNote: 'Zoek op de kaart stuurt alleen de plaats en het land naar OpenStreetMap. Verder gaat er niets van deze tablet af.',
+    deleteChapter: 'Dit hoofdstuk verwijderen', deleteConfirm: "Dit hoofdstuk en de foto's erin verwijderen?", untitled: '(nog geen titel)',
+    viewBook: 'Boek bekijken', exportZip: 'Kopie bewaren (.zip)', exporting: 'Kopie maken...',
+    exportHelp: 'De kopie komt in de map Downloads. Bewaar hem goed, of laad hem op een andere tablet in met "Levensboek inladen".',
   },
 };
 let T = TEXTS.en;
@@ -97,6 +136,7 @@ async function dbDo(store, mode, fn) {
 const dbGet = (store, key) => dbDo(store, 'readonly', s => s.get(key));
 const dbPut = (store, key, val) => dbDo(store, 'readwrite', s => s.put(val, key));
 const dbClear = store => dbDo(store, 'readwrite', s => s.clear());
+const dbDel = (store, key) => dbDo(store, 'readwrite', s => s.delete(key));
 
 async function photoUrl(id) {
   if (!id) return '';
@@ -184,6 +224,7 @@ function setBar(title, showBack = true) {
 
 /* ---------- Screens ---------- */
 function renderHome() {
+  if (edited) { tidyAll(); edited = false; }
   setBar(DATA.titel || T.defaultTitle, false);
   const tiles = Object.entries(SECS).filter(([k]) => sectionItems(k).length).map(([k, s]) => {
     const cov = coverOf(sectionItems(k));
@@ -424,8 +465,10 @@ function renderSetup(msg) {
   view.innerHTML = h`<div class="setup">
     <h2>${DATA ? T.replace : T.welcome}</h2>
     ${msg ? `<p style="color:#b5473a">${esc(msg)}</p>` : ''}
+    ${DATA ? `<button class="big" data-go="#maken">${T.edit}</button>` : ''}
     <p>${T.pickHelp}</p>
-    <button class="big" id="pick">${T.load}</button>
+    <button class="big${DATA ? ' alt' : ''}" id="pick">${T.load}</button>
+    <button class="big alt" id="make">${T.make}</button>
     <button class="big alt" id="demo">${T.demo}</button>
     ${DATA ? `<button class="big alt" id="wipe">${T.wipe}</button>` : ''}
     <div class="progress" hidden><div></div></div>
@@ -443,10 +486,298 @@ function renderSetup(msg) {
   };
   $('#demo').onclick = () => fetch(demoFile()).then(r => { if (!r.ok) throw new Error(T.demoMissing); return r.blob(); })
     .then(b => importZip(b, prog)).then(done, fail);
+  $('#make').onclick = () => { if (!DATA || confirm(T.newConfirm)) newBook().catch(fail); };
   const w = $('#wipe');
   if (w) w.onclick = async () => {
     if (!confirm(T.wipeConfirm)) return;
     await dbClear('files'); await dbClear('meta'); DATA = null; pickLanguage(); renderSetup();
+  };
+}
+
+/* ---------- Book maker (31 Oct 2026) ----------
+   Makes or changes a book on the tablet itself, in the same data.json + img/ form as an imported
+   zip. Photos are shrunk to at most 1920 px here and stored in IndexedDB; "Save a copy" packs it
+   all back into a zip the importer reads. Only "Find on the map" goes online (OpenStreetMap). */
+const MAX_SIDE = 1920;
+let saveT = null;
+let edited = false;
+function saveSoon() { edited = true; clearTimeout(saveT); saveT = setTimeout(saveNow, 400); }
+function saveNow() { clearTimeout(saveT); saveT = null; return dbPut('meta', 'data', DATA); }
+function flushSave() { if (saveT) saveNow(); }
+const newId = () => 't' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const isKids = key => key === 'kinderen';
+const yearOf = v => { const m = String(v || '').match(/\d{4}/); return m ? +m[0] : null; };
+
+async function newBook() {
+  await dbClear('files');
+  urlCache.forEach(u => u && URL.revokeObjectURL(u));
+  urlCache.clear();
+  DATA = { taal: T === TEXTS.nl ? 'nl' : 'en', titel: '', naam: '', ondertitel: '', diashowSeconden: 8, diashowNaMinuten: 3,
+    inleiding: {}, labels: {}, fotos: {}, secties: {}, delen: 1 };
+  await saveNow();
+  pickLanguage();
+  go('#maken');
+}
+
+/* Chronological like build_content.py; an entry without a year stays after the one above it.
+   Empty entries (no name, story or photos) are dropped. */
+function tidySection(key) {
+  const list = (DATA.secties[key] || []).filter(it => it.titel || it.naam || it.verhaal || (it.fotos || []).length);
+  let last = 0;
+  const keyed = list.map((it, n) => {
+    const y = yearOf(isKids(key) ? it.geboren : it.van || it.tot);
+    last = y == null ? last : y;
+    return { it, k: last, n };
+  }).sort((a, b) => a.k - b.k || a.n - b.n);
+  DATA.secties[key] = keyed.map(x => x.it);
+}
+function tidyAll() { DATA.secties = DATA.secties || {}; for (const k of Object.keys(SECS)) tidySection(k); saveSoon(); }
+
+async function toJpeg(file) {
+  let src;
+  try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); }
+  catch (e) {
+    const u = URL.createObjectURL(file);
+    src = new Image(); src.src = u;
+    try { await src.decode(); } finally { URL.revokeObjectURL(u); }
+  }
+  const w = src.width || src.naturalWidth, hgt = src.height || src.naturalHeight;
+  const s = Math.min(1, MAX_SIDE / Math.max(w, hgt));
+  const c = document.createElement('canvas');
+  c.width = Math.round(w * s); c.height = Math.round(hgt * s);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  if (src.close) src.close();
+  return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('jpeg')), 'image/jpeg', 0.85));
+}
+/* Opens the device gallery; resolves with the ids of the photos that were stored. */
+function pickPhotos(multiple, status) {
+  return new Promise(resolve => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = multiple;
+    inp.onchange = async () => {
+      const files = [...inp.files], ids = [];
+      let bad = 0;
+      for (let i = 0; i < files.length; i++) {
+        status && (status.textContent = T.preparing(i + 1, files.length));
+        try {
+          const blob = await toJpeg(files[i]), id = newId();
+          await dbPut('files', `img/${id}.jpg`, blob);
+          DATA.fotos[id] = { src: `img/${id}.jpg`, onderschrift: '', jaar: '', wie: '' };
+          ids.push(id);
+        } catch (e) { bad++; }
+      }
+      if (status) status.textContent = bad ? T.skipped(bad) : '';
+      resolve(ids);
+    };
+    inp.click();
+  });
+}
+/* Removes a photo from the book once nothing refers to it any more. */
+async function dropPhoto(id) {
+  const used = DATA.portret === id || Object.values(DATA.secties || {}).some(l => l.some(it => (it.fotos || []).includes(id)));
+  const f = DATA.fotos[id];
+  if (used || !f) return;
+  delete DATA.fotos[id];
+  await dbDel('files', f.src);
+  if (f.video) await dbDel('files', f.video);
+  [id, 'v:' + id].forEach(k => { if (urlCache.get(k)) URL.revokeObjectURL(urlCache.get(k)); urlCache.delete(k); });
+}
+
+/* OpenStreetMap Nominatim: one lookup at a time, at most one per second, only on a tap. */
+let lastGeo = 0;
+async function geocode(q) {
+  const wait = lastGeo + 1100 - Date.now();
+  if (wait > 0) await new Promise(r => setTimeout(r, wait));
+  lastGeo = Date.now();
+  const r = await fetch('https://nominatim.openstreetmap.org/search?' + new URLSearchParams({ q, format: 'jsonv2', limit: '1', 'accept-language': T.sort }));
+  if (!r.ok) throw new Error(r.status);
+  return (await r.json())[0] || null;
+}
+
+async function exportBook(status) {
+  await saveNow();
+  status.textContent = T.exporting;
+  const zip = new JSZip();
+  zip.file('data.json', JSON.stringify({ ...DATA, delen: 1 }, null, 1));
+  for (const f of Object.values(DATA.fotos || {})) {
+    for (const k of [f.src, f.video].filter(Boolean)) {
+      const b = await dbGet('files', k);
+      if (b) zip.file(k, b);
+    }
+  }
+  const out = await zip.generateAsync({ type: 'blob', compression: 'STORE' },
+    m => { status.textContent = `${T.exporting} ${Math.round(m.percent)}%`; });
+  const slug = String(DATA.titel || DATA.naam || 'lifetiles').normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'lifetiles';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(out); a.download = `${slug}-1.zip`;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 60000);
+  status.textContent = `${a.download} (${(out.size / 1e6).toFixed(1)} MB)`;
+}
+
+/* Text fields carry data-f="<field>"; they write straight into `obj` and save. */
+function bindFields(root, obj, onChange) {
+  root.querySelectorAll('[data-f]').forEach(el => el.oninput = () => {
+    const v = el.value;
+    if (v.trim() === '' && !(el.dataset.f in obj)) return;
+    obj[el.dataset.f] = v;
+    onChange && onChange(el.dataset.f, v);
+    saveSoon();
+  });
+}
+const field = (f, label, val, opts = '') => h`<label class="fld"><span>${label}</span>
+  <input data-f="${f}" value="${esc(val || '')}" ${opts}></label>`;
+
+function renderMaker() {
+  tidyAll();
+  setBar(T.makerTitle);
+  const lang = DATA.taal === 'nl' ? 'nl' : 'en';
+  view.innerHTML = h`<div class="maker">
+    <section class="mk">
+      <h2>${T.aboutBook}</h2>
+      <p class="mk-note">${T.autoSaved}</p>
+      <div class="fld"><span>${T.fLang}</span><div class="seg">
+        <button data-lang="en" class="${lang === 'en' ? 'on' : ''}">English</button>
+        <button data-lang="nl" class="${lang === 'nl' ? 'on' : ''}">Nederlands</button></div></div>
+      ${field('titel', T.fTitle, DATA.titel)}
+      ${field('naam', T.fName, DATA.naam)}
+      ${field('ondertitel', T.fSub, DATA.ondertitel)}
+      <div class="fld"><span>${T.portrait}</span>
+        <div class="mk-portrait">${DATA.portret ? `<img data-photo="${esc(DATA.portret)}" alt="">` : '<div class="noimg">\u{1F464}</div>'}
+        <button class="mkbtn" id="mkPortrait">${T.pickPortrait}</button></div>
+        <p class="mk-status" id="mkPStatus"></p></div>
+    </section>
+    <section class="mk">
+      <h2>${T.chapters}</h2>
+      <div class="mk-secs">${Object.entries(SECS).map(([k, s]) => h`<button class="mk-row" data-go="#maken/${k}" style="--sec:${s.color}">
+        <span class="ic">${s.icon}</span><span class="t">${esc(s.label)}</span>
+        <span class="n">${T.nChapters(sectionItems(k).length)}</span><span class="go">›</span></button>`).join('')}</div>
+    </section>
+    <section class="mk">
+      <button class="big" data-go="#home">${T.viewBook}</button>
+      <button class="big alt" id="mkExport">${T.exportZip}</button>
+      <p class="mk-note">${T.exportHelp}</p>
+      <p class="mk-status" id="mkStatus"></p>
+    </section></div>`;
+  fillImages();
+  bindFields(view, DATA, f => { if (f === 'titel') document.title = DATA.titel || 'Life Tiles'; });
+  view.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
+    DATA.taal = b.dataset.lang; saveNow(); pickLanguage(); renderMaker();
+  });
+  $('#mkPortrait').onclick = async () => {
+    const old = DATA.portret, [id] = await pickPhotos(false, $('#mkPStatus'));
+    if (!id) return;
+    DATA.portret = id;
+    if (old) await dropPhoto(old);
+    await saveNow(); renderMaker();
+  };
+  $('#mkExport').onclick = () => exportBook($('#mkStatus')).catch(e => { $('#mkStatus').textContent = e.message || String(e); });
+}
+
+function renderMakerSection(key) {
+  tidySection(key); saveSoon();
+  const s = SECS[key], items = sectionItems(key);
+  setBar(s.label);
+  view.innerHTML = h`<div class="maker">
+    <section class="mk">
+      <button class="big" id="mkAdd">${T.addChapter}</button>
+      <div class="mk-secs" style="--sec:${s.color}">${items.length ? items.map((it, i) => h`<button class="mk-row" data-go="#maken/${key}/${i}">
+        ${(it.fotos || []).length ? `<img data-photo="${it.fotos[0]}" alt="">` : `<span class="ic">${s.icon}</span>`}
+        <span class="t">${esc(it.titel || it.naam || T.untitled)}</span>
+        <span class="n">${isKids(key) ? esc(it.geboren || '') : period(it)}</span><span class="go">›</span></button>`).join('')
+        : `<p class="mk-note">${T.noChapters}</p>`}</div>
+    </section></div>`;
+  fillImages();
+  $('#mkAdd').onclick = () => {
+    DATA.secties[key] = DATA.secties[key] || [];
+    DATA.secties[key].push(isKids(key) ? { naam: '', geboren: '', plaats: '', verhaal: '', fotos: [] }
+      : { titel: '', plaats: '', land: '', van: '', tot: '', verhaal: '', fotos: [] });
+    go(`#maken/${key}/${DATA.secties[key].length - 1}`);
+  };
+}
+
+function renderMakerItem(key, idx) {
+  const it = sectionItems(key)[idx];
+  if (!SECS[key] || !it) return location.replace(SECS[key] ? `#maken/${key}` : '#maken');
+  it.fotos = it.fotos || [];
+  setBar(SECS[key].label);
+  const kids = isKids(key);
+  view.innerHTML = h`<div class="maker">
+    <section class="mk">
+      ${kids ? field('naam', T.fChName, it.naam) + field('geboren', T.fBorn, it.geboren) + field('plaats', T.fPlace, it.plaats)
+        : field('titel', T.fChTitle, it.titel) + `<div class="fld2">${field('van', T.fFrom, it.van, 'inputmode="numeric"')}${field('tot', T.fTo, it.tot, 'inputmode="numeric"')}</div>`
+          + `<div class="fld2">${field('plaats', T.fPlace, it.plaats)}${field('land', T.fCountry, it.land)}</div>`}
+      <label class="fld"><span>${T.fStory}</span><textarea data-f="verhaal" rows="8">${esc(it.verhaal || '')}</textarea>
+        <small>${T.storyHelp}</small></label>
+    </section>
+    <section class="mk">
+      <h2>${T.photos}</h2>
+      <div class="mk-photos">${it.fotos.map((id, i) => h`<div class="mk-ph">
+        <img data-photo="${esc(id)}" alt="">
+        <input data-cap="${esc(id)}" value="${esc((DATA.fotos[id] || {}).onderschrift || '')}" placeholder="${T.caption}">
+        <div class="mk-phb">${i ? `<button data-first="${i}">${T.makeFirst}</button>` : `<span>${T.firstPhoto}</span>`}
+        <button data-del="${i}">${T.removePhoto}</button></div></div>`).join('')}</div>
+      <button class="big alt" id="mkPhotos">${T.addPhotos}</button>
+      <p class="mk-status" id="mkStatus"></p>
+    </section>
+    ${kids ? '' : h`<section class="mk">
+      <h2>${T.location}</h2>
+      <button class="big alt" id="mkFind">${T.findPlace}</button>
+      <p class="mk-status" id="mkGeo"></p>
+      <div class="fld2">
+        <label class="fld"><span>${T.lat}</span><input id="mkLat" inputmode="decimal" value="${it.lat ?? ''}"></label>
+        <label class="fld"><span>${T.lon}</span><input id="mkLon" inputmode="decimal" value="${it.lon ?? ''}"></label></div>
+      <p class="mk-note">${T.geoNote}</p>
+    </section>`}
+    <section class="mk"><button class="big danger" id="mkDelete">${T.deleteChapter}</button></section>
+  </div>`;
+  fillImages();
+  bindFields(view, it);
+  view.querySelectorAll('[data-cap]').forEach(el => el.oninput = () => { DATA.fotos[el.dataset.cap].onderschrift = el.value; saveSoon(); });
+  const redraw = () => { const y = view.scrollTop; renderMakerItem(key, idx); view.scrollTop = y; };
+  view.querySelectorAll('[data-first]').forEach(b => b.onclick = () => {
+    const [id] = it.fotos.splice(+b.dataset.first, 1); it.fotos.unshift(id); saveNow(); redraw();
+  });
+  view.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    const [id] = it.fotos.splice(+b.dataset.del, 1); await dropPhoto(id); await saveNow(); redraw();
+  });
+  $('#mkPhotos').onclick = async () => {
+    const ids = await pickPhotos(true, $('#mkStatus'));
+    if (!ids.length) return;
+    it.fotos.push(...ids); await saveNow();
+    const msg = $('#mkStatus').textContent; redraw(); $('#mkStatus').textContent = msg;
+  };
+  if (!kids) {
+    const lat = $('#mkLat'), lon = $('#mkLon'), geo = $('#mkGeo');
+    const setLL = () => {
+      const a = parseFloat(lat.value.replace(',', '.')), b = parseFloat(lon.value.replace(',', '.'));
+      if (isFinite(a) && isFinite(b) && Math.abs(a) <= 90 && Math.abs(b) <= 180) { it.lat = a; it.lon = b; }
+      else if (!lat.value.trim() && !lon.value.trim()) { delete it.lat; delete it.lon; }
+      saveSoon();
+    };
+    lat.oninput = lon.oninput = setLL;
+    $('#mkFind').onclick = async e => {
+      const q = [it.adres, it.plaats, it.land].filter(Boolean).join(', ');
+      if (!q) return;
+      e.target.disabled = true; geo.textContent = T.finding;
+      try {
+        const hit = await geocode(q);
+        if (hit) {
+          it.lat = +(+hit.lat).toFixed(4); it.lon = +(+hit.lon).toFixed(4);
+          lat.value = it.lat; lon.value = it.lon; saveNow();
+          geo.textContent = T.found(hit.display_name);
+        } else geo.textContent = T.notFound;
+      } catch (err) { geo.textContent = T.geoFail; }
+      e.target.disabled = false;
+    };
+  }
+  $('#mkDelete').onclick = async () => {
+    if (!confirm(T.deleteConfirm)) return;
+    const [gone] = DATA.secties[key].splice(idx, 1);
+    for (const id of gone.fotos || []) await dropPhoto(id);
+    await saveNow();
+    location.replace(`#maken/${key}`);
   };
 }
 
@@ -503,7 +834,7 @@ $('#slideshow').onclick = () => { stopSlideshow(); if (location.hash === '#diash
 let idleTimer;
 function resetIdle() {
   clearTimeout(idleTimer);
-  if (!DATA || ss) return;
+  if (!DATA || ss || /^#(maken|instellen)/.test(location.hash)) return;
   idleTimer = setTimeout(() => {
     if ([...document.querySelectorAll('video')].some(v => !v.paused) || window.speechSynthesis?.speaking) return resetIdle();
     closeLightbox(); startSlideshow();
@@ -526,6 +857,7 @@ function swipe(el, cb) {
 function go(hash) { if (location.hash === hash) route(); else location.hash = hash; }
 function route() {
   const parts = (location.hash || '#home').slice(1).split('/');
+  flushSave();
   stopSpeaking();
   stopSlideshow();
   closeLightbox();
@@ -537,6 +869,7 @@ function route() {
     case 'kaart': return renderMap(parts[1], parts[2] != null ? +parts[2] : undefined);
     case 'diashow': renderHome(); return startSlideshow();
     case 'instellen': return renderSetup();
+    case 'maken': return parts[2] != null ? renderMakerItem(parts[1], +parts[2]) : SECS[parts[1]] ? renderMakerSection(parts[1]) : renderMaker();
     default: return renderHome();
   }
 }

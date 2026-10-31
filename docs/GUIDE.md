@@ -12,6 +12,20 @@ You need:
 
 No programming is needed. You fill in an Excel file, put photos in folders and run one command.
 
+## Quick route: make it on the tablet
+
+No computer at hand? You can make the whole book on the tablet itself.
+
+1. Open [lifetiles.web.app](https://lifetiles.web.app) in Chrome and install it (menu with three dots, **Install app** or **Add to home screen**).
+2. Hold the title at the top for 3 seconds (or tap it 5 times) and choose **Make a new book on this tablet**. If a book is already loaded, **Change this book** edits it.
+3. Under **About the book**, choose the language and fill in the title, the name, a line under the name and a portrait photo.
+4. Tap a chapter group (children, partner, homes, schools, work, holidays, celebrations), then **+ Add a chapter**. Fill in title, years, place, country and the story, and add photos from the tablet's gallery. Photos are made smaller (at most 1920 pixels) and stored only on the tablet.
+5. **Find on the map** looks up the place so it shows on the map. This is the only thing that uses the internet: just the place and country go to OpenStreetMap. You can also type the latitude and longitude yourself.
+6. Everything is saved straight away. Tap **View the book** to see the result.
+7. Tap **Save a copy (.zip)** now and then. The copy goes to Downloads; keep it safe (for example on a USB stick or in your own cloud). To move the book to another tablet, load that zip there with **Load a life book**.
+
+The Excel route below is handier for big books with hundreds of photos, videos or fixed questions. A copy saved on the tablet can still be loaded on any tablet.
+
 ---
 
 ## Step 1. Decide what goes in

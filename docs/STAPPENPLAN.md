@@ -10,6 +10,20 @@ Je hebt nodig:
 
 Programmeren hoeft niet. Je vult een Excel-bestand in, zet foto's in mappen en draait één opdracht.
 
+## Snelle route: maak het op de tablet
+
+Geen computer bij de hand? Je kunt het hele boek op de tablet zelf maken.
+
+1. Open [lifetiles.web.app](https://lifetiles.web.app) in Chrome en installeer de app (menu met drie puntjes, **App installeren** of **Toevoegen aan startscherm**).
+2. Houd de titel bovenaan 3 seconden vast (of tik er 5 keer op) en kies **Nieuw boek maken op deze tablet**. Staat er al een boek op, dan kun je het met **Dit boek aanpassen** veranderen.
+3. Kies onder **Over het boek** de taal en vul de titel, de naam, een regel onder de naam en een portretfoto in.
+4. Tik op een groep (kinderen, partner, wonen, scholen, werk, vakanties, feesten) en dan op **+ Hoofdstuk toevoegen**. Vul titel, jaren, plaats, land en het verhaal in en voeg foto's toe uit de galerij van de tablet. De foto's worden verkleind (hoogstens 1920 pixels) en alleen op de tablet bewaard.
+5. **Zoek op de kaart** zoekt de plek op zodat hij op de kaart komt. Alleen dit gebruikt internet: alleen de plaats en het land gaan naar OpenStreetMap. Je kunt de breedte- en lengtegraad ook zelf intikken.
+6. Alles wordt meteen bewaard. Tik op **Boek bekijken** om het resultaat te zien.
+7. Tik af en toe op **Kopie bewaren (.zip)**. De kopie komt in Downloads; bewaar hem goed (bijvoorbeeld op een USB-stick of in je eigen cloud). Om het boek naar een andere tablet te verhuizen, laad je die zip daar in met **Levensboek inladen**.
+
+De Excel-route hieronder is handiger voor grote boeken met honderden foto's, video's of vaste vragen. Een kopie die op de tablet is bewaard, kun je op elke tablet inladen.
+
 ---
 
 ## Stap 1. Bedenk wat erin moet
