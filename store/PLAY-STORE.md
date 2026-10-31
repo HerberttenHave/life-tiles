@@ -28,6 +28,8 @@ Zonder deze koppeling toont de app een adresbalk van Chrome.
 
 ## 3. App aanmaken in Play Console
 
+Alle antwoorden per scherm staan klaar in [PLAY-CONSOLE-ANSWERS.md](PLAY-CONSOLE-ANSWERS.md). Uitnodigingen voor testers: [TESTERS.md](TESTERS.md).
+
 1. **App maken**: naam Life Tiles, taal Engels (Verenigd Koninkrijk), App, Gratis.
 2. **Winkelvermelding**: teksten uit [LISTING.md](LISTING.md); afbeeldingen uit deze map. Voeg een Nederlandse vertaling toe.
 3. **Privacybeleid**: `https://lifetiles.web.app/privacy.html`
