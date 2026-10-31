@@ -57,6 +57,16 @@ Free to use under the [MIT licence](LICENSE). [Privacy](https://lifetiles.web.ap
 
 Life Tiles maakt van de foto's en het levensverhaal van een ouder of grootouder een rustige app voor de tablet: de kinderen, de partner, waar iemand woonde, naar school ging en werkte, de vakanties en de familie. Met grote tegels, een kaart, een automatische diashow en vragen die hardop worden voorgelezen.
 
+### Waarom ik dit maakte
+
+Voor de 89e verjaardag van mijn moeder heb ik een tablet-app voor haar gemaakt met haar hele leven erin: foto's, de plekken waar ze woonde, haar school, werk, vakanties en familie. Grote tegels, een kaart, een diashow, en de app leest antwoorden hardop voor.
+
+Nu heb ik hem gratis en open source gemaakt, zodat jij er een kunt maken voor je eigen ouders of grootouders. Hij werkt zonder internet en de foto's verlaten de tablet nooit.
+
+Binnenkort ook in de Google Play Store. Wil je testen? [Open een issue](https://github.com/HerberttenHave/life-tiles/issues) of stuur me een bericht.
+
+Herbert ten Have
+
 - **Offline en privé.** De foto's staan alleen op de tablet. De app op internet is een lege huls; je laadt je eigen pakket in.
 - **Gemaakt voor ouderen.** Grote knoppen, weinig keuzes, de diashow start vanzelf als niemand de tablet aanraakt.
 - **Zonder programmeren.** Maak het boek op de tablet zelf, of vul voor grote boeken een Excel-bestand in, zet foto's in mappen en draai één opdracht.
@@ -71,4 +81,4 @@ Life Tiles maakt van de foto's en het levensverhaal van een ouder of grootouder 
 1. [Werkblad](docs/WERKBLAD.md): bedenk samen wat erin moet.
 2. [Stappenplan](docs/STAPPENPLAN.md): van foto's verzamelen tot de app op de tablet.
 
-Gemaakt door Herbert ten Have voor zijn moeder, die 89 werd. Vrij te gebruiken onder de [MIT-licentie](LICENSE).
+Vrij te gebruiken onder de [MIT-licentie](LICENSE).
