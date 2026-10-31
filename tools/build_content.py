@@ -1,13 +1,15 @@
-"""Build the tablet content package (levensboek.zip) from an Excel file and photo folders.
+"""Build the Life Tiles tablet package (lifetiles-1.zip, -2.zip, ...) from an Excel file and photo folders.
 
 Usage:
-  python tools/build_content.py                      # content/ -> dist/levensboek.zip
-  python tools/build_content.py --template           # write an empty content/levensboek.xlsx
-  python tools/build_content.py --src DIR --out FILE # other content folder / output
+  python tools/build_content.py                        # content/ -> dist/lifetiles-*.zip
+  python tools/build_content.py --template             # write an empty English content/lifetiles.xlsx
+  python tools/build_content.py --template --lang nl   # the same in Dutch
+  python tools/build_content.py --src DIR --out FILE   # other content folder / output
 
 Content folder layout:
-  levensboek.xlsx           tabs: Over, Kinderen, Partner, Gezin, Wonen, School, Werk, Vakanties, Feesten, Fotos
-  fotos/<Fotomap>/*.jpg     one folder per row (column "Fotomap"); photos sorted by file name
+  lifetiles.xlsx (or levensboek.xlsx)  tabs in English (About, Children, ...) or Dutch (Over, Kinderen, ...)
+  fotos/<photo folder>/*.jpg            one folder per row; photos sorted by file name
+Internally (and in data.json) the Dutch names are used; English names are translated on reading.
 """
 import argparse
 import io
@@ -43,6 +45,7 @@ COLUMNS = {
     "Fotos": ["Bestand", "Onderschrift", "Jaar", "Wie staan erop"],
 }
 OVER_FIELDS = [
+    ("Taal", "nl", "nl (Nederlands) of en (Engels): taal van de knoppen en de voorleesstem"),
     ("Titel", "", "Bovenaan het startscherm, bijvoorbeeld: Het leven van mam"),
     ("Naam", "", "Volledige naam onder de portretfoto"),
     ("Ondertitel", "", "Bijvoorbeeld: geboren 12 maart 1937 in Dordrecht"),
@@ -52,6 +55,29 @@ OVER_FIELDS = [
 ] + [(f"Inleiding {s}", "", "Korte tekst boven de lijst (mag leeg)" if s == "Kinderen" else "") for s in SECTIONS] + [
     (f"Naam tegel {s}", "", "Andere naam voor deze tegel, bijvoorbeeld: Jan" if s == "Partner" else "")
     for s in SECTIONS]
+# English names for tabs, columns and About fields; the Dutch names are the internal ones.
+SHEET_EN = {"About": "Over", "Children": "Kinderen", "Partner": "Partner", "Family": "Gezin", "Homes": "Wonen",
+            "School": "School", "Work": "Werk", "Holidays": "Vakanties", "Celebrations": "Feesten", "Photos": "Fotos"}
+COL_EN = {"Field": "Veld", "Value": "Waarde", "Explanation": "Uitleg", "Name": "Naam", "Born": "Geboren",
+          "Title": "Titel", "Address": "Adres", "Town": "Plaats", "Country": "Land", "From": "Van", "To": "Tot",
+          "Story": "Verhaal", "Photo folder": "Fotomap", "Lat": "Lat", "Lon": "Lon", "Slideshow": "Diashow",
+          "File": "Bestand", "Caption": "Onderschrift", "Year": "Jaar", "Who is in it": "Wie staan erop"}
+SEC_EN = {nl: en for en, nl in SHEET_EN.items() if nl in SECTIONS}
+OVER_EN = {"Title": "Titel", "Name": "Naam", "Subtitle": "Ondertitel", "Portrait photo": "Portretfoto",
+           "Slideshow seconds": "Diashow seconden", "Slideshow after minutes": "Diashow na minuten", "Language": "Taal",
+           **{f"Introduction {SEC_EN[s]}": f"Inleiding {s}" for s in SECTIONS},
+           **{f"Tile name {SEC_EN[s]}": f"Naam tegel {s}" for s in SECTIONS}}
+OVER_HELP_EN = {
+    "Language": "en (English) or nl (Dutch): language of the buttons and the reading voice",
+    "Title": "At the top of the home screen, for example: Mum's life",
+    "Name": "Full name under the portrait photo",
+    "Subtitle": "For example: born 12 March 1937 in Dordrecht",
+    "Portrait photo": "Path inside the fotos folder, for example: Portrait/mum.jpg",
+    "Slideshow seconds": "How long each photo stays in the slideshow",
+    "Slideshow after minutes": "After how many minutes without touching the slideshow starts",
+    "Introduction Children": "Short text above the list (may be empty)",
+    "Tile name Partner": "Another name for this tile, for example: Jan",
+}
 IMG_EXT = {".jpg", ".jpeg", ".png", ".webp", ".heic", ".tif", ".tiff", ".bmp"}
 VID_EXT = {".mp4", ".mov", ".m4v", ".3gp", ".avi", ".mkv", ".mts"}
 MEDIA_EXT = IMG_EXT | VID_EXT
@@ -59,22 +85,33 @@ MAX_SIDE = 1920
 PART_MB = 150
 
 
-def write_template(path: Path):
+def write_template(path: Path, lang: str = "en"):
+    en = lang == "en"
+    sheet_name = {nl: e for e, nl in SHEET_EN.items()}
+    col_name = {nl: e for e, nl in COL_EN.items()}
+    field_name = {nl: e for e, nl in OVER_EN.items()}
     wb = Workbook()
     wb.remove(wb.active)
     head_fill = PatternFill("solid", fgColor="EAD9C6")
     for name, cols in COLUMNS.items():
+        if en:
+            name, cols = sheet_name[name], [col_name[c] for c in cols]
         ws = wb.create_sheet(name)
         ws.append(cols)
         for c in ws[1]:
             c.font = Font(bold=True)
             c.fill = head_fill
         for i, col in enumerate(cols, 1):
-            width = 60 if col in ("Verhaal", "Uitleg") else 22
+            width = 60 if col in ("Verhaal", "Uitleg", "Story", "Explanation") else 22
             ws.column_dimensions[ws.cell(1, i).column_letter].width = width
         ws.freeze_panes = "A2"
-    for row in OVER_FIELDS:
-        wb["Over"].append(list(row))
+    for field, value, help_nl in OVER_FIELDS:
+        if en:
+            field = field_name[field]
+            value = "en" if field == "Language" else value
+            wb["About"].append([field, value, OVER_HELP_EN.get(field, "")])
+        else:
+            wb["Over"].append([field, value, help_nl])
     for ws in wb.worksheets:
         for row in ws.iter_rows():
             for c in row:
@@ -87,6 +124,7 @@ def write_template(path: Path):
 def rows(ws):
     it = ws.iter_rows(values_only=True)
     header = [str(h).strip() if h else "" for h in next(it, [])]
+    header = [COL_EN.get(h, h) for h in header]
     for r in it:
         if not any(v not in (None, "") for v in r):
             continue
@@ -141,18 +179,19 @@ class Geocoder:
 
 
 def build(src: Path, out: Path, geocode: bool):
-    xlsx = src / "levensboek.xlsx"
+    xlsx = next((x for x in (src / "lifetiles.xlsx", src / "levensboek.xlsx") if x.exists()), None)
     fotos_dir = src / "fotos"
-    if not xlsx.exists():
-        sys.exit(f"Not found: {xlsx}  (run with --template first)")
-    wb = load_workbook(xlsx, data_only=True)
+    if not xlsx:
+        sys.exit(f"Not found: {src / 'lifetiles.xlsx'}  (run with --template first)")
+    book = load_workbook(xlsx, data_only=True)
+    wb = {SHEET_EN.get(ws.title.strip(), ws.title.strip()): ws for ws in book.worksheets}
     geo = Geocoder(src / "geocache.json", geocode)
 
     fotos = {}          # id -> {src, onderschrift, jaar, wie}
     by_path = {}        # relative path -> id
     images = []         # (zip name, source path)
     captions = {}
-    if "Fotos" in wb.sheetnames:
+    if "Fotos" in wb:
         for r in rows(wb["Fotos"]):
             p = txt(r.get("Bestand")).replace("\\", "/")
             if p:
@@ -187,9 +226,12 @@ def build(src: Path, out: Path, geocode: bool):
         files = sorted(p for p in d.rglob("*") if p.suffix.lower() in MEDIA_EXT)
         return [add_photo(p) for p in files]
 
-    over = {txt(r.get("Veld")): r.get("Waarde") for r in rows(wb["Over"])} if "Over" in wb.sheetnames else {}
+    over = {OVER_EN.get(txt(r.get("Veld")), txt(r.get("Veld"))): r.get("Waarde") for r in rows(wb["Over"])} if "Over" in wb else {}
+    taal = txt(over.get("Taal")).lower()
+    taal = "nl" if taal.startswith(("nl", "ned", "dut")) else "en" if taal.startswith(("en", "eng")) else (taal[:2] or "en")
     data = {
-        "titel": txt(over.get("Titel")) or "Mijn levensboek",
+        "taal": taal,
+        "titel": txt(over.get("Titel")) or ("Mijn levensboek" if taal == "nl" else "My life"),
         "naam": txt(over.get("Naam")),
         "ondertitel": txt(over.get("Ondertitel")),
         "diashowSeconden": int(over.get("Diashow seconden") or 8),
@@ -205,13 +247,13 @@ def build(src: Path, out: Path, geocode: bool):
         vragen.update(json.loads(f.read_text("utf-8")))
 
     for sec in SECTIONS:
-        if sec not in wb.sheetnames:
+        if sec not in wb:
             continue
         items = []
         for r in rows(wb[sec]):
             it = {k.lower(): txt(v) for k, v in r.items() if k and k not in ("Fotomap", "Lat", "Lon", "Diashow")}
             it["fotos"] = folder_photos(r.get("Fotomap"))
-            if txt(r.get("Diashow")).lower() == "nee":
+            if txt(r.get("Diashow")).lower() in ("nee", "no"):
                 # e.g. the farewell chapter: shown in its chapter, never in the automatic slideshow
                 for pid in it["fotos"]:
                     fotos[pid]["diashow"] = False
@@ -236,7 +278,8 @@ def build(src: Path, out: Path, geocode: bool):
         items.sort(key=lambda it: it.pop("_k"))
         # Question buttons with checked, sourced answers: content/vragen/*.json, keyed "<sectie>:<titel>".
         for it in items:
-            qs = vragen.get(f"{sec.lower()}:{it.get('titel') or it.get('naam')}")
+            name = it.get('titel') or it.get('naam')
+            qs = vragen.get(f"{sec.lower()}:{name}") or vragen.get(f"{SEC_EN[sec].lower()}:{name}")
             if qs:
                 it["vragen"] = [{"vraag": q["vraag"], "antwoord": q["antwoord"], "bronnen": q.get("bronnen", [])} for q in qs]
         data["secties"][sec.lower()] = items
@@ -342,11 +385,12 @@ def to_jpeg(path: Path) -> bytes:
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--src", default=str(ROOT / "content"))
-    ap.add_argument("--out", default=str(ROOT / "dist" / "levensboek.zip"))
+    ap.add_argument("--out", default=str(ROOT / "dist" / "lifetiles.zip"))
     ap.add_argument("--template", action="store_true")
+    ap.add_argument("--lang", choices=["en", "nl"], default="en", help="language of the template")
     ap.add_argument("--no-geocode", action="store_true")
     a = ap.parse_args()
     if a.template:
-        write_template(Path(a.src) / "levensboek.xlsx")
+        write_template(Path(a.src) / ("levensboek.xlsx" if a.lang == "nl" else "lifetiles.xlsx"), a.lang)
     else:
         build(Path(a.src), Path(a.out), not a.no_geocode)

@@ -1,31 +1,32 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#7a4a2a">
-<title>Levensboek</title>
+<title>Life Tiles</title>
+<meta name="description" content="A life story in big tiles: photos, places and memories on a tablet, offline and private.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header id="bar">
-  <button id="btnBack" class="barbtn" aria-label="Terug">&#8592; Terug</button>
-  <h1 id="title">Levensboek</h1>
-  <button id="btnHome" class="barbtn" aria-label="Begin">&#8962; Begin</button>
+  <button id="btnBack" class="barbtn" aria-label="Back">&#8592; Back</button>
+  <h1 id="title">Life Tiles</h1>
+  <button id="btnHome" class="barbtn" aria-label="Home">&#8962; Home</button>
 </header>
 <main id="view"></main>
 <div id="slideshow" hidden>
   <img id="ssA" alt=""><img id="ssB" alt="">
   <div id="ssCaption"></div>
-  <div id="ssHint">Tik op het scherm om terug te gaan</div>
+  <div id="ssHint">Tap the screen to go back</div>
 </div>
 <div id="lightbox" hidden>
   <div id="lbCaption"></div>
-  <button class="lbnav prev" aria-label="Vorige">&#8249;</button>
-  <button class="lbnav next" aria-label="Volgende">&#8250;</button>
-  <button class="lbclose" aria-label="Sluiten">&#10005; Sluiten</button>
+  <button class="lbnav prev" aria-label="Previous">&#8249;</button>
+  <button class="lbnav next" aria-label="Next">&#8250;</button>
+  <button class="lbclose" aria-label="Close">&#10005; Close</button>
 </div>
 <input type="file" id="zipInput" accept=".zip,application/zip" multiple hidden>
 <script src="config.js"></script>

@@ -11,18 +11,18 @@ Go through this worksheet before you start collecting photos. Ideally do it toge
 
 ## 2. Which chapters?
 
-The app has eight fixed tiles. You can give each tile its own name, and empty tiles disappear automatically. The Excel tabs keep their Dutch names; the English meaning is in the first column.
+The app has eight fixed tiles, one per tab in the Excel file. You can give each tile its own name, and empty tiles disappear automatically.
 
-| Tile (Excel tab) | Default name in the app | Your own name (optional) | What goes in? |
+| Tab | Default tile name | Your own name (optional) | What goes in? |
 |---|---|---|---|
-| Children (Kinderen) | Mijn kinderen | | Per child: name, born, story, photos |
-| Partner (Partner) | Mijn partner | for example the first name | Meeting, wedding, life together; possibly a farewell |
-| Family (Gezin) | Kinderen en kleinkinderen | | Each child's family, grandchildren |
-| Homes (Wonen) | Waar ik woonde | | Every address, with years |
-| School (School) | Mijn scholen | | Primary school, secondary school, training |
-| Work (Werk) | Mijn werk | | Jobs, volunteering, own business |
-| Holidays (Vakanties) | Vakanties | | Trips, with place and year |
-| Celebrations (Feesten) | Feesten en familie | | Parents, siblings, cousins, birthdays, anniversaries |
+| Children | My children | | Per child: name, born, story, photos |
+| Partner | My partner | for example the first name | Meeting, wedding, life together; possibly a farewell |
+| Family | Children and grandchildren | | Each child's family, grandchildren |
+| Homes | Where I lived | | Every address, with years |
+| School | My schools | | Primary school, secondary school, training |
+| Work | My work | | Jobs, volunteering, own business |
+| Holidays | Holidays | | Trips, with place and year |
+| Celebrations | Family and celebrations | | Parents, siblings, cousins, birthdays, anniversaries |
 
 ## 3. The timeline
 

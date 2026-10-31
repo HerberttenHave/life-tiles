@@ -1,20 +1,71 @@
-/* Levensboek: offline photo and life-story app for a 10-inch tablet.
+/* Life Tiles: offline photo and life-story app for a 10-inch tablet.
    All content lives in IndexedDB on the tablet, imported once from a .zip
    built by tools/build_content.py. Nothing is sent anywhere. */
 (() => {
 'use strict';
 
 const SECS = {
-  kinderen:  { label: 'Mijn kinderen',  icon: '\u{1F46A}', color: 'var(--c-kinderen)',  hex: '#b5473a' },
-  partner:   { label: 'Mijn partner',   icon: '❤',     color: 'var(--c-partner)',   hex: '#5b6e8c' },
-  gezin:     { label: 'Kinderen en kleinkinderen', icon: '\u{1F46A}', color: 'var(--c-gezin)', hex: '#7a6a3a' },
-  wonen:     { label: 'Waar ik woonde', icon: '\u{1F3E0}', color: 'var(--c-wonen)',     hex: '#3f6e8c' },
-  school:    { label: 'Mijn scholen',   icon: '\u{1F3EB}', color: 'var(--c-school)',    hex: '#6a8a3a' },
-  werk:      { label: 'Mijn werk',      icon: '\u{1F4BC}', color: 'var(--c-werk)',      hex: '#8a5a9a' },
-  vakanties: { label: 'Vakanties',      icon: '\u{1F3D6}', color: 'var(--c-vakanties)', hex: '#c98a1e' },
-  feesten:   { label: 'Feesten en familie', icon: '\u{1F389}', color: 'var(--c-feesten)', hex: '#2f7f74' },
+  kinderen:  { icon: '\u{1F46A}', color: 'var(--c-kinderen)',  hex: '#b5473a' },
+  partner:   { icon: '❤',     color: 'var(--c-partner)',   hex: '#5b6e8c' },
+  gezin:     { icon: '\u{1F46A}', color: 'var(--c-gezin)',     hex: '#7a6a3a' },
+  wonen:     { icon: '\u{1F3E0}', color: 'var(--c-wonen)',     hex: '#3f6e8c' },
+  school:    { icon: '\u{1F3EB}', color: 'var(--c-school)',    hex: '#6a8a3a' },
+  werk:      { icon: '\u{1F4BC}', color: 'var(--c-werk)',      hex: '#8a5a9a' },
+  vakanties: { icon: '\u{1F3D6}', color: 'var(--c-vakanties)', hex: '#c98a1e' },
+  feesten:   { icon: '\u{1F389}', color: 'var(--c-feesten)',   hex: '#2f7f74' },
 };
-const NL_BOX = [[3.2, 50.7], [7.3, 53.6]];
+
+/* Interface texts. The book's language comes from its content (tab About, row Language);
+   before any content is loaded the tablet's own language decides. */
+const TEXTS = {
+  en: {
+    speech: 'en-GB', sort: 'en',
+    labels: { kinderen: 'My children', partner: 'My partner', gezin: 'Children and grandchildren', wonen: 'Where I lived',
+      school: 'My schools', werk: 'My work', vakanties: 'Holidays', feesten: 'Family and celebrations' },
+    defaultTitle: 'My life', to: 'to', born: 'Born', bornIn: 'in', allPhotos: "See all photos", map: 'Map',
+    prev: 'Previous', next: 'Next', back: '← Back', home: '⌂ Home', close: '✕ Close', tapToReturn: 'Tap the screen to go back',
+    showOnMap: 'Show on the map', askTitle: 'Just ask', askOwn: 'Ask your own question', stop: '⏹ Stop reading',
+    source: 'Source: ', youAsked: q => `You asked: “${q}”. Let me think...`, noAnswer: 'I cannot look that up right now. Is the wifi on?',
+    listening: "I'm listening... Go ahead and ask.", notHeard: "I didn't quite hear that. Tap the microphone again.",
+    homeRegion: 'Around home', all: 'Everything', atThisSpot: 'At this spot:', places: n => `${n} places`,
+    setupTitle: 'Set up Life Tiles', replace: 'Replace the content', welcome: 'Welcome',
+    pickHelp: 'Choose <b>all</b> files <b>…-1.zip</b>, <b>…-2.zip</b>, ... that are on this tablet (for example in the Downloads folder). Press and hold the first file, then tap the others. The photos are stored only on this tablet.',
+    load: 'Load a life book (.zip)', demo: 'See an example', wipe: 'Erase everything from this tablet',
+    tip: 'Tip: in Chrome, open the menu (three dots) and choose <i>Add to home screen</i> or <i>Install app</i>.',
+    demoMissing: 'Example not found', wipeConfirm: 'Are you sure you want to erase all photos and stories from this tablet?',
+    noBook: 'No life book found: choose all parts at once (…-1.zip, …-2.zip, ...).',
+    missingParts: (a, b) => `Some parts are missing: ${a} of ${b} chosen. Choose them all at once.`,
+  },
+  nl: {
+    speech: 'nl-NL', sort: 'nl',
+    labels: { kinderen: 'Mijn kinderen', partner: 'Mijn partner', gezin: 'Kinderen en kleinkinderen', wonen: 'Waar ik woonde',
+      school: 'Mijn scholen', werk: 'Mijn werk', vakanties: 'Vakanties', feesten: 'Feesten en familie' },
+    defaultTitle: 'Mijn levensboek', to: 'tot', born: 'Geboren', bornIn: 'in', allPhotos: "Alle foto's bekijken", map: 'Kaart',
+    prev: 'Vorige', next: 'Volgende', back: '← Terug', home: '⌂ Begin', close: '✕ Sluiten', tapToReturn: 'Tik op het scherm om terug te gaan',
+    showOnMap: 'Laat zien op de kaart', askTitle: 'Vraag het maar', askOwn: 'Stel zelf een vraag', stop: '⏹ Stop met voorlezen',
+    source: 'Bron: ', youAsked: q => `Jij vroeg: “${q}”. Even denken...`, noAnswer: 'Het lukt nu even niet om dat op te zoeken. Staat de wifi aan?',
+    listening: 'Ik luister... Stel je vraag maar.', notHeard: 'Ik heb je niet goed verstaan. Tik nog eens op de microfoon.',
+    homeRegion: 'Rond huis', all: 'Alles', atThisSpot: 'Op deze plek:', places: n => `${n} plaatsen`,
+    setupTitle: 'Life Tiles instellen', replace: 'Inhoud vervangen', welcome: 'Welkom',
+    pickHelp: 'Kies <b>alle</b> bestanden <b>…-1.zip</b>, <b>…-2.zip</b>, ... die op deze tablet staan (bijvoorbeeld in de map Downloads). Houd je vinger op het eerste bestand en tik daarna de andere aan. De foto\'s worden alleen op deze tablet bewaard.',
+    load: 'Levensboek inladen (.zip)', demo: 'Voorbeeld bekijken', wipe: 'Alles van deze tablet wissen',
+    tip: 'Tip: kies in Chrome in het menu (drie puntjes) voor <i>Toevoegen aan startscherm</i> of <i>App installeren</i>.',
+    demoMissing: 'Voorbeeld niet gevonden', wipeConfirm: 'Weet je zeker dat je alle foto’s en verhalen van deze tablet wilt wissen?',
+    noBook: 'Geen levensboek gevonden: kies alle delen tegelijk (…-1.zip, …-2.zip, ...).',
+    missingParts: (a, b) => `Er ontbreken delen: ${a} van ${b} gekozen. Kies ze allemaal tegelijk.`,
+  },
+};
+let T = TEXTS.en;
+function pickLanguage() {
+  const want = String((DATA && DATA.taal) || navigator.language || 'en').slice(0, 2).toLowerCase();
+  T = TEXTS[want] || TEXTS.en;
+  document.documentElement.lang = want in TEXTS ? want : 'en';
+  for (const k of Object.keys(SECS)) SECS[k].label = ((DATA && DATA.labels) || {})[k] || T.labels[k];
+  $('#btnBack').textContent = T.back; $('#btnHome').textContent = T.home;
+  $('.lbclose').textContent = T.close; $('#ssHint').textContent = T.tapToReturn;
+  $('.lbnav.prev').setAttribute('aria-label', T.prev); $('.lbnav.next').setAttribute('aria-label', T.next);
+  pickVoice();
+}
 
 const $ = (s, el = document) => el.querySelector(s);
 const view = $('#view');
@@ -23,10 +74,6 @@ const h = (strings, ...vals) => strings.reduce((a, s, i) => a + s + (i < vals.le
 
 let DATA = null;
 const CONFIG = window.LEVENSBOEK_CONFIG || {};
-/* Tile names can be changed per book (tab "Over" in the Excel file, rows "Naam tegel ..."). */
-function applyLabels() {
-  for (const [k, l] of Object.entries((DATA && DATA.labels) || {})) if (SECS[k] && l) SECS[k].label = l;
-}
 const urlCache = new Map();
 
 /* ---------- IndexedDB ---------- */
@@ -86,18 +133,18 @@ async function importZip(blobs, onProgress) {
     }
     zip = null; done++;
   }
-  if (!data) throw new Error('Geen levensboek gevonden: kies alle delen tegelijk (levensboek-1.zip, levensboek-2.zip, ...).');
-  if (data.delen && done < data.delen) throw new Error(`Er ontbreken delen: ${done} van ${data.delen} gekozen. Kies ze allemaal tegelijk.`);
+  if (!data) throw new Error(T.noBook);
+  if (data.delen && done < data.delen) throw new Error(T.missingParts(done, data.delen));
   await dbPut('meta', 'data', data);
   urlCache.forEach(u => u && URL.revokeObjectURL(u));
   urlCache.clear();
   DATA = data;
-  applyLabels();
+  pickLanguage();
 }
 
 /* ---------- Helpers ---------- */
 function period(it) {
-  if (it.van && it.tot && it.van !== it.tot) return `${esc(it.van)} tot ${esc(it.tot)}`;
+  if (it.van && it.tot && it.van !== it.tot) return `${esc(it.van)} ${T.to} ${esc(it.tot)}`;
   return esc(it.van || it.tot || it.jaar || '');
 }
 function placeLine(it) { return [it.adres, it.plaats, it.land].filter(Boolean).map(esc).join(', '); }
@@ -137,7 +184,7 @@ function setBar(title, showBack = true) {
 
 /* ---------- Screens ---------- */
 function renderHome() {
-  setBar(DATA.titel || 'Mijn levensboek', false);
+  setBar(DATA.titel || T.defaultTitle, false);
   const tiles = Object.entries(SECS).filter(([k]) => sectionItems(k).length).map(([k, s]) => {
     const cov = coverOf(sectionItems(k));
     return h`<button class="tile" data-go="#sec/${k}">
@@ -149,11 +196,11 @@ function renderHome() {
     <div class="portrait">
       <img data-photo="${esc(DATA.portret || '')}" alt="">
       <div class="who"><b>${esc(DATA.naam || '')}</b><span>${esc(DATA.ondertitel || '')}</span></div>
-      <button class="playall" data-go="#diashow">▶&nbsp; Alle foto's bekijken</button>
+      <button class="playall" data-go="#diashow">▶&nbsp; ${T.allPhotos}</button>
     </div>
     <div class="tiles" style="grid-template-columns:repeat(${Object.keys(SECS).filter(k => sectionItems(k).length).length > 5 ? 4 : 3}, 1fr)">
       ${tiles}
-      <button class="tile plain" data-go="#kaart" style="background:#3f6e8c"><span class="icon">\u{1F5FA}</span><span class="lbl">Kaart</span></button>
+      <button class="tile plain" data-go="#kaart" style="background:#3f6e8c"><span class="icon">\u{1F5FA}</span><span class="lbl">${T.map}</span></button>
     </div></div>`;
   fillImages();
 }
@@ -167,7 +214,7 @@ function renderSection(key) {
     ${items.map((it, i) => h`<button class="card" data-go="#item/${key}/${i}">
       ${it.fotos && it.fotos.length ? `<img data-photo="${it.fotos[0]}" alt="">` : `<div class="noimg">${s.icon}</div>`}
       <span class="txt"><span class="t">${esc(it.titel || it.naam)}</span>
-      <span class="s">${key === 'kinderen' ? esc(it.geboren ? 'Geboren ' + it.geboren : '') : period(it)}</span>
+      <span class="s">${key === 'kinderen' ? esc(it.geboren ? T.born + ' ' + it.geboren : '') : period(it)}</span>
       <span class="s">${placeLine(it)}</span></span></button>`).join('')}
     </div>`;
   fillImages();
@@ -181,7 +228,7 @@ function renderItem(key, idx) {
   let cur = 0;
   const meta = [];
   if (key === 'kinderen') {
-    if (it.geboren) meta.push(`Geboren ${esc(it.geboren)}${it.plaats ? ' in ' + esc(it.plaats) : ''}`);
+    if (it.geboren) meta.push(`${T.born} ${esc(it.geboren)}${it.plaats ? ` ${T.bornIn} ` + esc(it.plaats) : ''}`);
   } else {
     if (period(it)) meta.push(period(it));
     if (placeLine(it)) meta.push(placeLine(it));
@@ -189,19 +236,19 @@ function renderItem(key, idx) {
   view.innerHTML = h`<div class="detail">
     <div class="gallery">
       ${photos.length ? '' : `<div style="font-size:120px">${SECS[key].icon}</div>`}
-      ${photos.length > 1 ? '<button class="nav prev" aria-label="Vorige">&#8249;</button><button class="nav next" aria-label="Volgende">&#8250;</button><div class="count"></div>' : ''}
+      ${photos.length > 1 ? `<button class="nav prev" aria-label="${T.prev}">&#8249;</button><button class="nav next" aria-label="${T.next}">&#8250;</button><div class="count"></div>` : ''}
       <div class="cap"></div>
     </div>
     <div class="story">
       <h2>${esc(it.titel || it.naam)}</h2>
       <div class="meta">${meta.map(m => `<div>${m}</div>`).join('')}</div>
       ${(it.verhaal || '').split(/\n\s*\n/).filter(Boolean).map(p => `<p>${esc(p)}</p>`).join('')}
-      ${it.lat != null && key !== 'kinderen' ? `<button class="tomap" data-go="#kaart/${key}/${idx}">\u{1F5FA} Laat zien op de kaart</button>` : ''}
+      ${it.lat != null && key !== 'kinderen' ? `<button class="tomap" data-go="#kaart/${key}/${idx}">\u{1F5FA} ${T.showOnMap}</button>` : ''}
       <div class="ask">
-        <h3>Vraag het maar</h3>
+        <h3>${T.askTitle}</h3>
         <div class="qlist">${(it.vragen || []).map((q, i) => `<button class="q" data-q="${i}">${esc(q.vraag)}</button>`).join('')}</div>
-        <button class="mic" hidden>\u{1F3A4} Stel zelf een vraag</button>
-        <div class="answer" hidden><p class="atext"></p><div class="asrc"></div><button class="stop">⏹ Stop met voorlezen</button></div>
+        <button class="mic" hidden>\u{1F3A4} ${T.askOwn}</button>
+        <div class="answer" hidden><p class="atext"></p><div class="asrc"></div><button class="stop">${T.stop}</button></div>
       </div>
     </div></div>`;
   setupAsk(key, it);
@@ -222,22 +269,23 @@ function renderItem(key, idx) {
 /* ---------- Asking and speaking (21 Oct 2026) ----------
    Fixed questions have checked answers in the content and work offline. The microphone sends a
    spoken question to your own levensboekVraag function (only with wifi, and only when config.js
-   sets vraagUrl). Answers are read aloud by the tablet's own Dutch voice. */
+   sets vraagUrl). Answers are read aloud by the tablet's own voice in the book's language. */
 const VRAAG_URL = CONFIG.vraagUrl || '';
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let nlVoice = null;
+let voice = null;
 function pickVoice() {
-  const vs = speechSynthesis.getVoices().filter(v => /^nl/i.test(v.lang));
-  nlVoice = vs.find(v => v.lang === 'nl-NL' && /google/i.test(v.name)) || vs.find(v => v.lang === 'nl-NL') || vs[0] || null;
+  if (!('speechSynthesis' in window)) return;
+  const lang = T.speech, vs = speechSynthesis.getVoices().filter(v => v.lang.slice(0, 2) === lang.slice(0, 2));
+  voice = vs.find(v => v.lang === lang && /google/i.test(v.name)) || vs.find(v => v.lang === lang) || vs[0] || null;
 }
-if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+if ('speechSynthesis' in window) speechSynthesis.onvoiceschanged = pickVoice;
 function speak(text) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   // One utterance per sentence: Chrome on Android stops long utterances halfway.
   for (const part of text.match(/[^.!?]+[.!?]*/g) || [text]) {
     const u = new SpeechSynthesisUtterance(part.trim());
-    u.lang = 'nl-NL'; if (nlVoice) u.voice = nlVoice; u.rate = 0.9;
+    u.lang = T.speech; if (voice) u.voice = voice; u.rate = 0.9;
     speechSynthesis.speak(u);
   }
 }
@@ -251,7 +299,7 @@ function setupAsk(key, it) {
   if (!(it.vragen || []).length && !canMic) { box.hidden = true; return; }
   function show(text, say, src) {
     ans.hidden = false; atext.textContent = text;
-    asrc.textContent = src && src.length ? 'Bron: ' + [...new Set(src)].join(', ') : '';
+    asrc.textContent = src && src.length ? T.source + [...new Set(src)].join(', ') : '';
     if (say) speak(text);
     ans.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -262,31 +310,31 @@ function setupAsk(key, it) {
   });
   $('.stop').onclick = () => stopSpeaking();
   async function ask(vraag) {
-    show(`Jij vroeg: “${vraag}”. Even denken...`, false);
+    show(T.youAsked(vraag), false);
     try {
       const r = await fetch(VRAAG_URL, { method: 'POST', signal: AbortSignal.timeout(80000), headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        vraag, context: { persoon: DATA.naam, over: DATA.ondertitel, sectie: SECS[key].label, titel: it.titel || it.naam, plaats: it.plaats, land: it.land, van: it.van || it.geboren, tot: it.tot, verhaal: it.verhaal } }) });
+        vraag, context: { taal: T.speech.slice(0, 2), persoon: DATA.naam, over: DATA.ondertitel, sectie: SECS[key].label, titel: it.titel || it.naam, plaats: it.plaats, land: it.land, van: it.van || it.geboren, tot: it.tot, verhaal: it.verhaal } }) });
       const d = await r.json();
       if (!d.antwoord) throw new Error('leeg');
       show(d.antwoord, true, d.bronnen);
     } catch (e) {
-      show('Het lukt nu even niet om dat op te zoeken. Staat de wifi aan?', true);
+      show(T.noAnswer, true);
     }
   }
   mic.onclick = () => {
     stopSpeaking();
     const rec = new SR();
-    rec.lang = 'nl-NL'; rec.interimResults = false; rec.maxAlternatives = 1;
-    mic.classList.add('on'); show('Ik luister... Stel je vraag maar.', false);
+    rec.lang = T.speech; rec.interimResults = false; rec.maxAlternatives = 1;
+    mic.classList.add('on'); show(T.listening, false);
     rec.onresult = e => ask(e.results[0][0].transcript);
-    rec.onerror = () => show('Ik heb je niet goed verstaan. Tik nog eens op de microfoon.', true);
+    rec.onerror = () => show(T.notHeard, true);
     rec.onend = () => mic.classList.remove('on');
     rec.start();
   };
 }
 
 function renderMap(focusKey, focusIdx) {
-  setBar('Kaart');
+  setBar(T.map);
   const pins = [];
   for (const k of Object.keys(SECS)) {
     if (k === 'kinderen') continue;
@@ -297,26 +345,31 @@ function renderMap(focusKey, focusIdx) {
     <div class="legend">
       ${Object.entries(SECS).filter(([k]) => k !== 'kinderen' && pins.some(p => p.k === k)).map(([k, s]) =>
         `<button data-layer="${k}"><span class="dot" style="background:${s.hex}"></span>${s.label}</button>`).join('')}
-      <button class="zoom" data-zoom="nl">Nederland</button>
-      <button class="zoom" data-zoom="all">Alles</button>
+      ${pins.some(p => p.k === 'wonen') ? `<button class="zoom" data-zoom="home">${T.homeRegion}</button>` : ''}
+      <button class="zoom" data-zoom="all">${T.all}</button>
       <div id="here"></div>
     </div></div>`;
   const hidden = new Set();
   const el = $('#map');
   const world = topojson.feature(MAP_TOPO, MAP_TOPO.objects.countries);
   let mode = 'all', zoomBox = null;
+  const fit = list => {
+    const lons = list.map(p => p.it.lon), lats = list.map(p => p.it.lat);
+    return [[Math.min(...lons) - .8, Math.min(...lats) - .5], [Math.max(...lons) + .8, Math.max(...lats) + .5]];
+  };
+  const homes = pins.filter(p => p.k === 'wonen');
+  // The country they lived in longest-ish (first home) is drawn a little darker.
+  const homeCountry = homes.length ? world.features.find(f => d3.geoContains(f, [homes[0].it.lon, homes[0].it.lat])) : null;
 
   function draw() {
     const W = el.clientWidth, H = el.clientHeight;
     const vis = pins.filter(p => !hidden.has(p.k));
     let box;
-    if (mode === 'nl') box = NL_BOX;
+    if (mode === 'home') box = fit(homes);
     else if (mode === 'box') box = zoomBox;
     else if (mode === 'focus') { const p = pins.find(p => p.k === focusKey && p.i === focusIdx); box = [[p.it.lon - 1.2, p.it.lat - .7], [p.it.lon + 1.2, p.it.lat + .7]]; }
-    else if (vis.length) {
-      const lons = vis.map(p => p.it.lon), lats = vis.map(p => p.it.lat);
-      box = [[Math.min(...lons) - .8, Math.min(...lats) - .5], [Math.max(...lons) + .8, Math.max(...lats) + .5]];
-    } else box = NL_BOX;
+    else if (vis.length) box = fit(vis);
+    else box = [[-25, 34], [45, 71]];
     const proj = d3.geoMercator().fitExtent([[40, 40], [W - 40, H - 40]],
       { type: 'MultiPoint', coordinates: [box[0], box[1]] });
     const path = d3.geoPath(proj);
@@ -328,13 +381,13 @@ function renderMap(focusKey, focusIdx) {
       if (g) g.items.push(p); else groups.push({ x, y, items: [p] });
     }
     el.innerHTML = `<svg viewBox="0 0 ${W} ${H}">
-      ${world.features.map(f => `<path class="land${f.properties.name === 'Netherlands' ? ' nl' : ''}" d="${path(f) || ''}"/>`).join('')}
+      ${world.features.map(f => `<path class="land${f === homeCountry ? ' nl' : ''}" d="${path(f) || ''}"/>`).join('')}
       ${groups.map((g, gi) => {
         const p = g.items[0], col = SECS[p.k].hex;
         const r = g.items.length > 1 ? 20 : 15;
         const places = new Set(g.items.map(q => q.it.plaats));
         const label = g.items.length === 1 ? esc(p.it.plaats || p.it.titel)
-          : places.size === 1 ? `${esc(p.it.plaats)} (${g.items.length})` : `${places.size} plaatsen`;
+          : places.size === 1 ? `${esc(p.it.plaats)} (${g.items.length})` : T.places(places.size);
         const focus = mode === 'focus' && g.items.some(q => q.k === focusKey && q.i === focusIdx);
         return `<g class="pin" data-g="${gi}" style="cursor:pointer">
           <circle cx="${g.x}" cy="${g.y}" r="${focus ? r + 8 : r}" fill="${col}"/>
@@ -349,7 +402,7 @@ function renderMap(focusKey, focusIdx) {
         zoomBox = [[Math.min(...lons) - .15, Math.min(...lats) - .1], [Math.max(...lons) + .15, Math.max(...lats) + .1]];
         mode = 'box'; return draw();
       }
-      $('#here').innerHTML = `<p style="margin:8px 4px;font-weight:700">Op deze plek:</p>` + g.items.map(q =>
+      $('#here').innerHTML = `<p style="margin:8px 4px;font-weight:700">${T.atThisSpot}</p>` + g.items.map(q =>
         `<button data-go="#item/${q.k}/${q.i}"><span class="dot" style="background:${SECS[q.k].hex}"></span>${esc(q.it.titel)}</button>`).join('');
     });
   }
@@ -367,16 +420,16 @@ function renderMap(focusKey, focusIdx) {
 }
 
 function renderSetup(msg) {
-  setBar('Levensboek instellen', !!DATA);
+  setBar(T.setupTitle, !!DATA);
   view.innerHTML = h`<div class="setup">
-    <h2>${DATA ? 'Inhoud vervangen' : 'Welkom'}</h2>
+    <h2>${DATA ? T.replace : T.welcome}</h2>
     ${msg ? `<p style="color:#b5473a">${esc(msg)}</p>` : ''}
-    <p>Kies <b>alle</b> bestanden <b>levensboek-1.zip</b>, <b>levensboek-2.zip</b>, ... die op deze tablet staan (bijvoorbeeld in de map Downloads). Houd je vinger op het eerste bestand en tik daarna de andere aan. De foto's worden alleen op deze tablet bewaard.</p>
-    <button class="big" id="pick">Levensboek inladen (.zip)</button>
-    <button class="big alt" id="demo">Voorbeeld bekijken</button>
-    ${DATA ? '<button class="big alt" id="wipe">Alles van deze tablet wissen</button>' : ''}
+    <p>${T.pickHelp}</p>
+    <button class="big" id="pick">${T.load}</button>
+    <button class="big alt" id="demo">${T.demo}</button>
+    ${DATA ? `<button class="big alt" id="wipe">${T.wipe}</button>` : ''}
     <div class="progress" hidden><div></div></div>
-    <small>Tip: in Chrome kies je daarna in het menu (drie puntjes) voor <i>Toevoegen aan startscherm</i>. Dan staat het levensboek als app op de tablet.</small>
+    <small>${T.tip}</small>
   </div>`;
   const bar = $('.progress'), fill = $('.progress div');
   const prog = p => { bar.hidden = false; fill.style.width = Math.round(p * 100) + '%'; };
@@ -384,16 +437,16 @@ function renderSetup(msg) {
   const fail = e => renderSetup(e.message || String(e));
   $('#pick').onclick = () => $('#zipInput').click();
   $('#zipInput').onchange = e => {
-    const fs = [...e.target.files].sort((a, b) => a.name.localeCompare(b.name, 'nl', { numeric: true }));
+    const fs = [...e.target.files].sort((a, b) => a.name.localeCompare(b.name, T.sort, { numeric: true }));
     if (fs.length) importZip(fs, prog).then(done, fail);
     e.target.value = '';
   };
-  $('#demo').onclick = () => fetch('voorbeeld-1.zip').then(r => { if (!r.ok) throw new Error('Voorbeeld niet gevonden'); return r.blob(); })
+  $('#demo').onclick = () => fetch(demoFile()).then(r => { if (!r.ok) throw new Error(T.demoMissing); return r.blob(); })
     .then(b => importZip(b, prog)).then(done, fail);
   const w = $('#wipe');
   if (w) w.onclick = async () => {
-    if (!confirm('Weet je zeker dat je alle foto’s en verhalen van deze tablet wilt wissen?')) return;
-    await dbClear('files'); await dbClear('meta'); DATA = null; renderSetup();
+    if (!confirm(T.wipeConfirm)) return;
+    await dbClear('files'); await dbClear('meta'); DATA = null; pickLanguage(); renderSetup();
   };
 }
 
@@ -511,14 +564,18 @@ titleEl.addEventListener('pointerdown', () => {
 ['pointerup', 'touchend'].forEach(ev => titleEl.addEventListener(ev, () => clearTimeout(holdT)));
 
 /* ---------- Boot ---------- */
+/* Example books with placeholder photos: demo-en-1.zip and demo-nl-1.zip. */
+function demoFile() { return `demo-${T === TEXTS.nl ? 'nl' : 'en'}-1.zip`; }
 let MAP_TOPO;
 (async () => {
   MAP_TOPO = await fetch('vendor/countries-50m.json').then(r => r.json());
   try { DATA = await dbGet('meta', 'data') || null; } catch (e) { DATA = null; }
-  if (!DATA && new URLSearchParams(location.search).has('voorbeeld')) {
-    try { await importZip(await fetch('voorbeeld-1.zip').then(r => r.blob())); } catch (e) { /* show setup */ }
+  pickLanguage();
+  const q = new URLSearchParams(location.search);
+  if (!DATA && (q.has('demo') || q.has('voorbeeld'))) {
+    try { await importZip(await fetch(demoFile()).then(r => r.blob())); } catch (e) { /* show setup */ }
   }
-  applyLabels();
+  pickLanguage();
   if (DATA && DATA.titel) document.title = DATA.titel;
   route(); resetIdle();
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});

@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "site": "lifetiles",
+    "public": "app",
+    "ignore": ["**/.git/**", "**/node_modules/**"],
+    "headers": [
+      { "source": "**/*.@(js|css|html|webmanifest|json)", "headers": [{ "key": "Cache-Control", "value": "no-cache" }] },
+      { "source": "/.well-known/assetlinks.json", "headers": [{ "key": "Content-Type", "value": "application/json" }] }
+    ]
+  }
+}

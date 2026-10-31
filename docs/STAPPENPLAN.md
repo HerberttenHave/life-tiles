@@ -1,6 +1,6 @@
-# Stappenplan: zelf een levensboek maken
+# Stappenplan: zelf een levensboek maken met Life Tiles
 
-Met dit stappenplan maak je een levensboek-app voor een familielid: foto's, verhalen, een kaart en een diashow op een tablet. Het werkt zonder internet en de foto's blijven op de tablet.
+Met dit stappenplan maak je met Life Tiles een levensboek voor een familielid: foto's, verhalen, een kaart en een diashow op een tablet. Het werkt zonder internet en de foto's blijven op de tablet.
 
 Je hebt nodig:
 
@@ -18,9 +18,9 @@ Vul eerst het [werkblad](WERKBLAD.md) in: voor wie het is, welke hoofdstukken, d
 
 ## Stap 2. Haal dit project op je computer
 
-1. Ga naar de GitHub-pagina van dit project en klik op **Code > Download ZIP**. Pak het bestand uit, bijvoorbeeld in `Documenten\levensboek`.
+1. Ga naar [github.com/HerberttenHave/life-tiles](https://github.com/HerberttenHave/life-tiles) en klik op **Code > Download ZIP**. Pak het bestand uit, bijvoorbeeld in `Documenten\life-tiles`.
 2. Installeer **Python** (gratis) van [python.org](https://www.python.org/downloads/). Vink bij Windows **Add Python to PATH** aan.
-3. Open een opdrachtvenster in de map `levensboek` (Windows: typ `cmd` in de adresbalk van de Verkenner en druk op Enter) en installeer de hulpmiddelen:
+3. Open een opdrachtvenster in de map `life-tiles` (Windows: typ `cmd` in de adresbalk van de Verkenner en druk op Enter) en installeer de hulpmiddelen:
 
    ```
    pip install -r requirements.txt
@@ -31,14 +31,14 @@ Vul eerst het [werkblad](WERKBLAD.md) in: voor wie het is, welke hoofdstukken, d
 ## Stap 3. Maak het lege Excel-bestand
 
 ```
-python tools/build_content.py --template
+python tools/build_content.py --template --lang nl
 ```
 
-Dit maakt `content/levensboek.xlsx` met deze tabbladen:
+Dit maakt `content/levensboek.xlsx` met Nederlandse tabbladen. (Zonder `--lang nl` krijg je een Engelse versie, `lifetiles.xlsx`.)
 
 | Tabblad | Wat vul je in |
 |---|---|
-| **Over** | Titel, naam, ondertitel (bijvoorbeeld "geboren 12 maart 1937 in Dordrecht"), portretfoto, diashow-instellingen, een korte inleiding per hoofdstuk en eventueel een eigen naam per tegel ("Naam tegel Partner" = "Jan") |
+| **Over** | Taal (`nl` of `en`, voor de knoppen en de voorleesstem), titel, naam, ondertitel (bijvoorbeeld "geboren 12 maart 1937 in Dordrecht"), portretfoto, diashow-instellingen, een korte inleiding per hoofdstuk en eventueel een eigen naam per tegel ("Naam tegel Partner" = "Jan") |
 | **Kinderen** | Naam, geboren, plaats, verhaal, fotomap |
 | **Partner, Gezin, Wonen, School, Werk, Vakanties, Feesten** | Per regel één hoofdstuk: titel, adres, plaats, land, van, tot, verhaal, fotomap. Lat en Lon mogen leeg blijven. Zet in kolom **Diashow** "nee" als die foto's niet in de automatische diashow mogen |
 | **Fotos** (optioneel) | Per foto een onderschrift, het jaar en wie erop staan |
@@ -105,7 +105,7 @@ De sleutel is `<tabblad in kleine letters>:<titel van het hoofdstuk>`. Zoek elk 
 python tools/build_content.py
 ```
 
-Het resultaat staat in `dist/`: `levensboek-1.zip`, `levensboek-2.zip`, enzovoort. Elk deel is ongeveer 150 MB, zodat een tablet het aankan. Foto's worden verkleind tot 1920 pixels, video's omgezet naar 720p.
+Het resultaat staat in `dist/`: `lifetiles-1.zip`, `lifetiles-2.zip`, enzovoort. Elk deel is ongeveer 150 MB, zodat een tablet het aankan. Foto's worden verkleind tot 1920 pixels, video's omgezet naar 720p.
 
 Controleer de waarschuwingen in het venster (bijvoorbeeld een fotomap die niet bestaat).
 
@@ -115,7 +115,7 @@ Wil je eerst zien hoe het eruitziet? Zet de zip-bestanden op de tablet (stap 8) 
 
 **De app openen**
 
-Je kunt de app direct gebruiken op **https://herberttenhave.github.io/levensboek/**. Daar staat alleen de lege app; jouw foto's komen er nooit op. Wil je een eigen adres of de microfoonfunctie (stap 9), maak dan een eigen kopie: klik op GitHub op **Fork**, ga in je kopie naar **Settings > Pages**, kies **Source: GitHub Actions**, en je app staat op `https://<jouw-naam>.github.io/levensboek/`.
+Open **https://lifetiles.web.app** in Chrome op de tablet, of installeer **Life Tiles** uit Google Play zodra hij daar staat. Online staat alleen de lege app; jouw foto's komen er nooit op. Wil je een eigen adres of de microfoonfunctie (stap 9), maak dan een eigen kopie: klik op GitHub op **Fork**, ga in je kopie naar **Settings > Pages**, kies **Source: GitHub Actions**, en je app staat op `https://<jouw-naam>.github.io/life-tiles/`.
 
 **Installeren op een Android-tablet**
 
@@ -127,7 +127,7 @@ Lukt installeren niet? Een snelkoppeling werkt ook. Na de eerste keer openen wer
 
 **Het pakket inladen**
 
-1. Zet alle `levensboek-*.zip` bestanden in de map **Downloads** van de tablet: met een USB-kabel, of via Google Drive (map delen, op de tablet elk bestand **Downloaden**).
+1. Zet alle `lifetiles-*.zip` bestanden in de map **Downloads** van de tablet: met een USB-kabel, of via Google Drive (map delen, op de tablet elk bestand **Downloaden**).
 2. Open de app en tik op **Levensboek inladen (.zip)**.
 3. Kies **alle** delen tegelijk: houd je vinger op het eerste bestand en tik de andere aan.
 4. Wacht tot de balk vol is. Daarna mogen de zip-bestanden uit Downloads weg; de app bewaart alles zelf.

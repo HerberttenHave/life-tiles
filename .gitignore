@@ -5,7 +5,7 @@ werk/
 bron/
 demo-content/
 *.zip
-!app/voorbeeld-1.zip
+!app/demo-*.zip
 functions/node_modules/
 functions/.env
 .firebase/
