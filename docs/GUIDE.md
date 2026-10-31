@@ -2,7 +2,7 @@
 
 With this guide you build a life book for a family member: photos, stories, a map and a slideshow on a tablet. It works without internet and the photos stay on the tablet.
 
-The app speaks English or Dutch; you choose per book. Your own titles and stories can be in any language.
+The app speaks English, Dutch, German, French or Spanish; you choose per book. (This guide and the Excel template are in English and Dutch.) Your own titles and stories can be in any language.
 
 You need:
 
@@ -54,7 +54,7 @@ This creates `content/lifetiles.xlsx` with these tabs:
 
 | Tab | What you fill in |
 |---|---|
-| **About** | Language (`en` or `nl`), title, name, subtitle (e.g. "born 12 March 1937 in Dordrecht"), portrait photo, slideshow settings, a short introduction per chapter, and optionally your own tile names ("Tile name Partner" = "John") |
+| **About** | Language (`en`, `nl`, `de`, `fr` or `es`), title, name, subtitle (e.g. "born 12 March 1937 in Dordrecht"), portrait photo, slideshow settings, a short introduction per chapter, and optionally your own tile names ("Tile name Partner" = "John") |
 | **Children** | Name, born, town, story, photo folder |
 | **Partner, Family, Homes, School, Work, Holidays, Celebrations** | One chapter per row: title, address, town, country, from, to, story, photo folder. Lat and Lon may stay empty. Put "no" in the **Slideshow** column to keep those photos out of the automatic slideshow |
 | **Photos** (optional) | Per photo: file, caption, year and who is in it |

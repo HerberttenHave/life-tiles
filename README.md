@@ -25,7 +25,7 @@ Herbert ten Have
 - **No programming.** Make the book on the tablet itself, or for big books fill in an Excel file, put photos in folders and run one command.
 - **Map** of all the places in their life, also offline.
 - **Questions per chapter** with a checked answer that the tablet reads aloud. Optionally, ask your own question by voice.
-- **English and Dutch**, chosen per book.
+- **English, Dutch, German, French and Spanish**, chosen per book.
 
 **Try it:** [lifetiles.web.app/?demo](https://lifetiles.web.app/?demo) (example photos only)
 
@@ -72,7 +72,7 @@ Herbert ten Have
 - **Zonder programmeren.** Maak het boek op de tablet zelf, of vul voor grote boeken een Excel-bestand in, zet foto's in mappen en draai één opdracht.
 - **Kaart** met alle plekken uit het leven, ook zonder internet.
 - **Vragen per hoofdstuk** met een nagezocht antwoord dat de tablet voorleest. Optioneel ook zelf een vraag inspreken.
-- **Nederlands en Engels**, te kiezen per boek.
+- **Nederlands, Engels, Duits, Frans en Spaans**, te kiezen per boek.
 
 **Probeer het:** [lifetiles.web.app/?demo](https://lifetiles.web.app/?demo) (alleen voorbeeldfoto's)
 

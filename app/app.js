@@ -16,11 +16,11 @@ const SECS = {
   feesten:   { icon: '\u{1F389}', color: 'var(--c-feesten)',   hex: '#2f7f74' },
 };
 
-/* Interface texts. The book's language comes from its content (tab About, row Language);
+/* Interface texts in English, Dutch, German, French and Spanish. The book's language comes from its content (tab About, row Language);
    before any content is loaded the tablet's own language decides. */
 const TEXTS = {
   en: {
-    speech: 'en-GB', sort: 'en',
+    name: 'English', speech: 'en-GB', sort: 'en',
     labels: { kinderen: 'My children', partner: 'My partner', gezin: 'Children and grandchildren', wonen: 'Where I lived',
       school: 'My schools', werk: 'My work', vakanties: 'Holidays', feesten: 'Family and celebrations' },
     defaultTitle: 'My life', to: 'to', born: 'Born', bornIn: 'in', allPhotos: "See all photos", map: 'Map',
@@ -57,7 +57,7 @@ const TEXTS = {
     exportHelp: 'The copy goes to the Downloads folder. Keep it safe, or load it on another tablet with "Load a life book".',
   },
   nl: {
-    speech: 'nl-NL', sort: 'nl',
+    name: 'Nederlands', speech: 'nl-NL', sort: 'nl',
     labels: { kinderen: 'Mijn kinderen', partner: 'Mijn partner', gezin: 'Kinderen en kleinkinderen', wonen: 'Waar ik woonde',
       school: 'Mijn scholen', werk: 'Mijn werk', vakanties: 'Vakanties', feesten: 'Feesten en familie' },
     defaultTitle: 'Mijn levensboek', to: 'tot', born: 'Geboren', bornIn: 'in', allPhotos: "Alle foto's bekijken", map: 'Kaart',
@@ -93,8 +93,120 @@ const TEXTS = {
     viewBook: 'Boek bekijken', exportZip: 'Kopie bewaren (.zip)', exporting: 'Kopie maken...',
     exportHelp: 'De kopie komt in de map Downloads. Bewaar hem goed, of laad hem op een andere tablet in met "Levensboek inladen".',
   },
+  de: {
+    name: 'Deutsch', speech: 'de-DE', sort: 'de',
+    labels: { kinderen: 'Meine Kinder', partner: 'Mein Partner', gezin: 'Kinder und Enkel', wonen: 'Wo ich wohnte',
+      school: 'Meine Schulen', werk: 'Meine Arbeit', vakanties: 'Urlaube', feesten: 'Familie und Feste' },
+    defaultTitle: 'Mein Leben', to: 'bis', born: 'Geboren', bornIn: 'in', allPhotos: 'Alle Fotos ansehen', map: 'Karte',
+    prev: 'Zurück', next: 'Weiter', back: '← Zurück', home: '⌂ Start', close: '✕ Schließen', tapToReturn: 'Tippe auf den Bildschirm, um zurückzugehen',
+    showOnMap: 'Auf der Karte zeigen', askTitle: 'Frag einfach', askOwn: 'Eigene Frage stellen', stop: '⏹ Vorlesen beenden',
+    source: 'Quelle: ', youAsked: q => `Du hast gefragt: „${q}“. Einen Moment...`, noAnswer: 'Das kann ich gerade nicht nachschlagen. Ist das WLAN an?',
+    listening: 'Ich höre zu... Stell deine Frage.', notHeard: 'Das habe ich nicht gut verstanden. Tippe noch einmal auf das Mikrofon.',
+    homeRegion: 'Rund ums Zuhause', all: 'Alles', atThisSpot: 'An diesem Ort:', places: n => `${n} Orte`,
+    setupTitle: 'Life Tiles einrichten', replace: 'Inhalt ersetzen', welcome: 'Willkommen',
+    pickHelp: 'Wähle <b>alle</b> Dateien <b>…-1.zip</b>, <b>…-2.zip</b>, ... auf diesem Tablet (zum Beispiel im Ordner Downloads). Halte den Finger auf die erste Datei und tippe dann die anderen an. Die Fotos werden nur auf diesem Tablet gespeichert.',
+    load: 'Lebensbuch laden (.zip)', demo: 'Beispiel ansehen', wipe: 'Alles von diesem Tablet löschen',
+    tip: 'Tipp: Öffne in Chrome das Menü (drei Punkte) und wähle <i>Zum Startbildschirm hinzufügen</i> oder <i>App installieren</i>.',
+    demoMissing: 'Beispiel nicht gefunden', wipeConfirm: 'Möchtest du wirklich alle Fotos und Geschichten von diesem Tablet löschen?',
+    noBook: 'Kein Lebensbuch gefunden: Wähle alle Teile gleichzeitig (…-1.zip, …-2.zip, ...).',
+    missingParts: (a, b) => `Es fehlen Teile: ${a} von ${b} gewählt. Wähle alle gleichzeitig.`,
+    make: 'Neues Buch auf diesem Tablet erstellen', edit: 'Dieses Buch bearbeiten', makerTitle: 'Buch erstellen',
+    newConfirm: 'Ein neues, leeres Buch beginnen? Das Buch auf diesem Tablet wird gelöscht. Speichere vorher eine Kopie, wenn du es behalten möchtest.',
+    aboutBook: 'Über das Buch', autoSaved: 'Alles wird sofort auf diesem Tablet gespeichert.',
+    fTitle: 'Titel oben auf dem Bildschirm', fName: 'Name unter dem Porträt', fSub: 'Zeile unter dem Namen, zum Beispiel: geboren am 12. März 1937 in Köln',
+    fLang: 'Sprache der Tasten und der Vorlesestimme', portrait: 'Porträtfoto', pickPortrait: 'Porträtfoto wählen',
+    chapters: 'Kapitel', nChapters: n => n === 1 ? '1 Kapitel' : `${n} Kapitel`, addChapter: '+ Kapitel hinzufügen',
+    noChapters: 'Noch keine Kapitel. Tippe auf die Taste oben, um das erste hinzuzufügen.',
+    fChTitle: 'Titel', fChName: 'Name', fBorn: 'Geboren (Jahr oder Datum)', fPlace: 'Ort', fCountry: 'Land',
+    fFrom: 'Von (Jahr)', fTo: 'Bis (Jahr)', fStory: 'Geschichte', storyHelp: 'Lass eine Zeile frei, um einen neuen Absatz zu beginnen.',
+    photos: 'Fotos', addPhotos: '+ Fotos von diesem Tablet hinzufügen', caption: 'Bildunterschrift (darf leer sein)', removePhoto: '✕ Entfernen',
+    firstPhoto: 'Erstes Foto, erscheint auf der Kachel', makeFirst: 'Als erstes',
+    preparing: (a, b) => `Fotos werden vorbereitet: ${a} von ${b}`, skipped: n => `${n} Datei(en) konnten nicht gelesen werden und wurden übersprungen.`,
+    location: 'Ort auf der Karte', findPlace: '🔍 Auf der Karte suchen', finding: 'Wird gesucht...',
+    found: n => `Gefunden: ${n}`, notFound: 'Nicht gefunden. Prüfe die Schreibweise oder gib die Zahlen selbst ein.',
+    geoFail: 'Die Suche braucht Internet. Du kannst die Zahlen auch selbst eingeben.', lat: 'Breitengrad', lon: 'Längengrad',
+    geoNote: 'Auf der Karte suchen sendet nur Ort und Land an OpenStreetMap. Sonst verlässt nichts dieses Tablet.',
+    deleteChapter: 'Dieses Kapitel löschen', deleteConfirm: 'Dieses Kapitel und seine Fotos löschen?', untitled: '(noch kein Titel)',
+    viewBook: 'Buch ansehen', exportZip: 'Kopie speichern (.zip)', exporting: 'Kopie wird erstellt...',
+    exportHelp: 'Die Kopie landet im Ordner Downloads. Bewahre sie gut auf oder lade sie auf einem anderen Tablet mit „Lebensbuch laden“.',
+  },
+  fr: {
+    name: 'Français', speech: 'fr-FR', sort: 'fr',
+    labels: { kinderen: 'Mes enfants', partner: 'Mon conjoint', gezin: 'Enfants et petits-enfants', wonen: 'Où j’ai habité',
+      school: 'Mes écoles', werk: 'Mon travail', vakanties: 'Vacances', feesten: 'Famille et fêtes' },
+    defaultTitle: 'Ma vie', to: 'à', born: 'Né(e)', bornIn: 'à', allPhotos: 'Voir toutes les photos', map: 'Carte',
+    prev: 'Précédente', next: 'Suivante', back: '← Retour', home: '⌂ Accueil', close: '✕ Fermer', tapToReturn: 'Touchez l’écran pour revenir',
+    showOnMap: 'Voir sur la carte', askTitle: 'Posez votre question', askOwn: 'Poser ma propre question', stop: '⏹ Arrêter la lecture',
+    source: 'Source : ', youAsked: q => `Vous avez demandé : « ${q} ». Un instant...`, noAnswer: 'Je ne peux pas chercher cela pour le moment. Le wifi est-il activé ?',
+    listening: 'J’écoute... Posez votre question.', notHeard: 'Je n’ai pas bien compris. Touchez encore le micro.',
+    homeRegion: 'Près de chez moi', all: 'Tout', atThisSpot: 'À cet endroit :', places: n => `${n} lieux`,
+    setupTitle: 'Configurer Life Tiles', replace: 'Remplacer le contenu', welcome: 'Bienvenue',
+    pickHelp: 'Choisissez <b>tous</b> les fichiers <b>…-1.zip</b>, <b>…-2.zip</b>, ... sur cette tablette (par exemple dans le dossier Téléchargements). Gardez le doigt sur le premier fichier, puis touchez les autres. Les photos restent uniquement sur cette tablette.',
+    load: 'Charger un livre de vie (.zip)', demo: 'Voir un exemple', wipe: 'Tout effacer de cette tablette',
+    tip: 'Astuce : dans Chrome, ouvrez le menu (trois points) et choisissez <i>Ajouter à l’écran d’accueil</i> ou <i>Installer l’application</i>.',
+    demoMissing: 'Exemple introuvable', wipeConfirm: 'Voulez-vous vraiment effacer toutes les photos et histoires de cette tablette ?',
+    noBook: 'Aucun livre de vie trouvé : choisissez toutes les parties en même temps (…-1.zip, …-2.zip, ...).',
+    missingParts: (a, b) => `Il manque des parties : ${a} sur ${b} choisies. Choisissez-les toutes en même temps.`,
+    make: 'Créer un nouveau livre sur cette tablette', edit: 'Modifier ce livre', makerTitle: 'Créer le livre',
+    newConfirm: 'Commencer un nouveau livre vide ? Le livre actuel de cette tablette sera effacé. Enregistrez d’abord une copie si vous voulez le garder.',
+    aboutBook: 'À propos du livre', autoSaved: 'Tout est enregistré tout de suite sur cette tablette.',
+    fTitle: 'Titre en haut de l’écran', fName: 'Nom sous le portrait', fSub: 'Ligne sous le nom, par exemple : née le 12 mars 1937 à Lyon',
+    fLang: 'Langue des boutons et de la voix de lecture', portrait: 'Photo portrait', pickPortrait: 'Choisir une photo portrait',
+    chapters: 'Chapitres', nChapters: n => n === 1 ? '1 chapitre' : `${n} chapitres`, addChapter: '+ Ajouter un chapitre',
+    noChapters: 'Pas encore de chapitres. Touchez le bouton ci-dessus pour ajouter le premier.',
+    fChTitle: 'Titre', fChName: 'Nom', fBorn: 'Né(e) (année ou date)', fPlace: 'Ville ou lieu', fCountry: 'Pays',
+    fFrom: 'De (année)', fTo: 'À (année)', fStory: 'Histoire', storyHelp: 'Laissez une ligne vide pour commencer un nouveau paragraphe.',
+    photos: 'Photos', addPhotos: '+ Ajouter des photos de cette tablette', caption: 'Légende (facultative)', removePhoto: '✕ Retirer',
+    firstPhoto: 'Première photo, affichée sur la tuile', makeFirst: 'En premier',
+    preparing: (a, b) => `Préparation des photos : ${a} sur ${b}`, skipped: n => `${n} fichier(s) illisible(s), ignoré(s).`,
+    location: 'Lieu sur la carte', findPlace: '🔍 Chercher sur la carte', finding: 'Recherche...',
+    found: n => `Trouvé : ${n}`, notFound: 'Introuvable. Vérifiez l’orthographe ou saisissez les nombres vous-même.',
+    geoFail: 'La recherche demande internet. Vous pouvez aussi saisir les nombres vous-même.', lat: 'Latitude', lon: 'Longitude',
+    geoNote: 'Chercher sur la carte n’envoie que le lieu et le pays à OpenStreetMap. Rien d’autre ne quitte cette tablette.',
+    deleteChapter: 'Supprimer ce chapitre', deleteConfirm: 'Supprimer ce chapitre et ses photos ?', untitled: '(pas encore de titre)',
+    viewBook: 'Voir le livre', exportZip: 'Enregistrer une copie (.zip)', exporting: 'Création de la copie...',
+    exportHelp: 'La copie va dans le dossier Téléchargements. Gardez-la précieusement, ou chargez-la sur une autre tablette avec « Charger un livre de vie ».',
+  },
+  es: {
+    name: 'Español', speech: 'es-ES', sort: 'es',
+    labels: { kinderen: 'Mis hijos', partner: 'Mi pareja', gezin: 'Hijos y nietos', wonen: 'Dónde viví',
+      school: 'Mis escuelas', werk: 'Mi trabajo', vakanties: 'Vacaciones', feesten: 'Familia y fiestas' },
+    defaultTitle: 'Mi vida', to: 'a', born: 'Nació', bornIn: 'en', allPhotos: 'Ver todas las fotos', map: 'Mapa',
+    prev: 'Anterior', next: 'Siguiente', back: '← Atrás', home: '⌂ Inicio', close: '✕ Cerrar', tapToReturn: 'Toca la pantalla para volver',
+    showOnMap: 'Ver en el mapa', askTitle: 'Pregunta', askOwn: 'Hacer mi propia pregunta', stop: '⏹ Dejar de leer',
+    source: 'Fuente: ', youAsked: q => `Has preguntado: «${q}». Un momento...`, noAnswer: 'Ahora no puedo buscarlo. ¿Está el wifi encendido?',
+    listening: 'Te escucho... Haz tu pregunta.', notHeard: 'No te he entendido bien. Toca otra vez el micrófono.',
+    homeRegion: 'Cerca de casa', all: 'Todo', atThisSpot: 'En este lugar:', places: n => `${n} lugares`,
+    setupTitle: 'Configurar Life Tiles', replace: 'Sustituir el contenido', welcome: 'Bienvenido',
+    pickHelp: 'Elige <b>todos</b> los archivos <b>…-1.zip</b>, <b>…-2.zip</b>, ... de esta tableta (por ejemplo en la carpeta Descargas). Mantén el dedo sobre el primer archivo y luego toca los demás. Las fotos se guardan solo en esta tableta.',
+    load: 'Cargar un libro de vida (.zip)', demo: 'Ver un ejemplo', wipe: 'Borrar todo de esta tableta',
+    tip: 'Consejo: en Chrome, abre el menú (tres puntos) y elige <i>Añadir a pantalla de inicio</i> o <i>Instalar aplicación</i>.',
+    demoMissing: 'No se encontró el ejemplo', wipeConfirm: '¿Seguro que quieres borrar todas las fotos e historias de esta tableta?',
+    noBook: 'No se encontró ningún libro de vida: elige todas las partes a la vez (…-1.zip, …-2.zip, ...).',
+    missingParts: (a, b) => `Faltan partes: ${a} de ${b} elegidas. Elígelas todas a la vez.`,
+    make: 'Crear un libro nuevo en esta tableta', edit: 'Cambiar este libro', makerTitle: 'Crear el libro',
+    newConfirm: '¿Empezar un libro nuevo y vacío? Se borrará el libro de esta tableta. Guarda antes una copia si quieres conservarlo.',
+    aboutBook: 'Sobre el libro', autoSaved: 'Todo se guarda al instante en esta tableta.',
+    fTitle: 'Título en la parte superior', fName: 'Nombre bajo el retrato', fSub: 'Línea bajo el nombre, por ejemplo: nacida el 12 de marzo de 1937 en Sevilla',
+    fLang: 'Idioma de los botones y de la voz de lectura', portrait: 'Foto de retrato', pickPortrait: 'Elegir una foto de retrato',
+    chapters: 'Capítulos', nChapters: n => n === 1 ? '1 capítulo' : `${n} capítulos`, addChapter: '+ Añadir un capítulo',
+    noChapters: 'Aún no hay capítulos. Toca el botón de arriba para añadir el primero.',
+    fChTitle: 'Título', fChName: 'Nombre', fBorn: 'Nació (año o fecha)', fPlace: 'Ciudad o lugar', fCountry: 'País',
+    fFrom: 'Desde (año)', fTo: 'Hasta (año)', fStory: 'Historia', storyHelp: 'Deja una línea vacía para empezar un párrafo nuevo.',
+    photos: 'Fotos', addPhotos: '+ Añadir fotos de esta tableta', caption: 'Pie de foto (opcional)', removePhoto: '✕ Quitar',
+    firstPhoto: 'Primera foto, aparece en el mosaico', makeFirst: 'Poner primero',
+    preparing: (a, b) => `Preparando fotos: ${a} de ${b}`, skipped: n => `${n} archivo(s) no se pudieron leer y se omitieron.`,
+    location: 'Lugar en el mapa', findPlace: '🔍 Buscar en el mapa', finding: 'Buscando...',
+    found: n => `Encontrado: ${n}`, notFound: 'No encontrado. Revisa la ortografía o escribe los números tú mismo.',
+    geoFail: 'La búsqueda necesita internet. También puedes escribir los números tú mismo.', lat: 'Latitud', lon: 'Longitud',
+    geoNote: 'Buscar en el mapa solo envía el lugar y el país a OpenStreetMap. Nada más sale de esta tableta.',
+    deleteChapter: 'Borrar este capítulo', deleteConfirm: '¿Borrar este capítulo y sus fotos?', untitled: '(aún sin título)',
+    viewBook: 'Ver el libro', exportZip: 'Guardar una copia (.zip)', exporting: 'Creando la copia...',
+    exportHelp: 'La copia va a la carpeta Descargas. Guárdala bien, o cárgala en otra tableta con «Cargar un libro de vida».',
+  },
 };
 let T = TEXTS.en;
+const langOf = t => Object.keys(TEXTS).find(k => TEXTS[k] === t) || 'en';
 function pickLanguage() {
   const want = String((DATA && DATA.taal) || navigator.language || 'en').slice(0, 2).toLowerCase();
   T = TEXTS[want] || TEXTS.en;
@@ -512,7 +624,7 @@ async function newBook() {
   await dbClear('files');
   urlCache.forEach(u => u && URL.revokeObjectURL(u));
   urlCache.clear();
-  DATA = { taal: T === TEXTS.nl ? 'nl' : 'en', titel: '', naam: '', ondertitel: '', diashowSeconden: 8, diashowNaMinuten: 3,
+  DATA = { taal: langOf(T), titel: '', naam: '', ondertitel: '', diashowSeconden: 8, diashowNaMinuten: 3,
     inleiding: {}, labels: {}, fotos: {}, secties: {}, delen: 1 };
   await saveNow();
   pickLanguage();
@@ -632,14 +744,13 @@ const field = (f, label, val, opts = '') => h`<label class="fld"><span>${label}<
 function renderMaker() {
   tidyAll();
   setBar(T.makerTitle);
-  const lang = DATA.taal === 'nl' ? 'nl' : 'en';
+  const lang = DATA.taal in TEXTS ? DATA.taal : 'en';
   view.innerHTML = h`<div class="maker">
     <section class="mk">
       <h2>${T.aboutBook}</h2>
       <p class="mk-note">${T.autoSaved}</p>
       <div class="fld"><span>${T.fLang}</span><div class="seg">
-        <button data-lang="en" class="${lang === 'en' ? 'on' : ''}">English</button>
-        <button data-lang="nl" class="${lang === 'nl' ? 'on' : ''}">Nederlands</button></div></div>
+        ${Object.entries(TEXTS).map(([k, t]) => `<button data-lang="${k}" class="${lang === k ? 'on' : ''}">${t.name}</button>`).join('')}</div></div>
       ${field('titel', T.fTitle, DATA.titel)}
       ${field('naam', T.fName, DATA.naam)}
       ${field('ondertitel', T.fSub, DATA.ondertitel)}
@@ -898,7 +1009,7 @@ titleEl.addEventListener('pointerdown', () => {
 
 /* ---------- Boot ---------- */
 /* Example books with placeholder photos: demo-en-1.zip and demo-nl-1.zip. */
-function demoFile() { return `demo-${T === TEXTS.nl ? 'nl' : 'en'}-1.zip`; }
+function demoFile() { return `demo-${T === TEXTS.nl ? 'nl' : 'en'}-1.zip`; }  // other languages show the English demo
 let MAP_TOPO;
 (async () => {
   MAP_TOPO = await fetch('vendor/countries-50m.json').then(r => r.json());

@@ -52,7 +52,7 @@ Dit maakt `content/levensboek.xlsx` met Nederlandse tabbladen. (Zonder `--lang n
 
 | Tabblad | Wat vul je in |
 |---|---|
-| **Over** | Taal (`nl` of `en`, voor de knoppen en de voorleesstem), titel, naam, ondertitel (bijvoorbeeld "geboren 12 maart 1937 in Dordrecht"), portretfoto, diashow-instellingen, een korte inleiding per hoofdstuk en eventueel een eigen naam per tegel ("Naam tegel Partner" = "Jan") |
+| **Over** | Taal (`nl`, `en`, `de`, `fr` of `es`, voor de knoppen en de voorleesstem), titel, naam, ondertitel (bijvoorbeeld "geboren 12 maart 1937 in Dordrecht"), portretfoto, diashow-instellingen, een korte inleiding per hoofdstuk en eventueel een eigen naam per tegel ("Naam tegel Partner" = "Jan") |
 | **Kinderen** | Naam, geboren, plaats, verhaal, fotomap |
 | **Partner, Gezin, Wonen, School, Werk, Vakanties, Feesten** | Per regel één hoofdstuk: titel, adres, plaats, land, van, tot, verhaal, fotomap. Lat en Lon mogen leeg blijven. Zet in kolom **Diashow** "nee" als die foto's niet in de automatische diashow mogen |
 | **Fotos** (optioneel) | Per foto een onderschrift, het jaar en wie erop staan |

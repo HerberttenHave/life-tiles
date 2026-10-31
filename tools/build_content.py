@@ -45,7 +45,7 @@ COLUMNS = {
     "Fotos": ["Bestand", "Onderschrift", "Jaar", "Wie staan erop"],
 }
 OVER_FIELDS = [
-    ("Taal", "nl", "nl (Nederlands) of en (Engels): taal van de knoppen en de voorleesstem"),
+    ("Taal", "nl", "nl, en, de, fr of es: taal van de knoppen en de voorleesstem"),
     ("Titel", "", "Bovenaan het startscherm, bijvoorbeeld: Het leven van mam"),
     ("Naam", "", "Volledige naam onder de portretfoto"),
     ("Ondertitel", "", "Bijvoorbeeld: geboren 12 maart 1937 in Dordrecht"),
@@ -68,7 +68,7 @@ OVER_EN = {"Title": "Titel", "Name": "Naam", "Subtitle": "Ondertitel", "Portrait
            **{f"Introduction {SEC_EN[s]}": f"Inleiding {s}" for s in SECTIONS},
            **{f"Tile name {SEC_EN[s]}": f"Naam tegel {s}" for s in SECTIONS}}
 OVER_HELP_EN = {
-    "Language": "en (English) or nl (Dutch): language of the buttons and the reading voice",
+    "Language": "en, nl, de, fr or es: language of the buttons and the reading voice",
     "Title": "At the top of the home screen, for example: Mum's life",
     "Name": "Full name under the portrait photo",
     "Subtitle": "For example: born 12 March 1937 in Dordrecht",
@@ -231,7 +231,7 @@ def build(src: Path, out: Path, geocode: bool):
     taal = "nl" if taal.startswith(("nl", "ned", "dut")) else "en" if taal.startswith(("en", "eng")) else (taal[:2] or "en")
     data = {
         "taal": taal,
-        "titel": txt(over.get("Titel")) or ("Mijn levensboek" if taal == "nl" else "My life"),
+        "titel": txt(over.get("Titel")),  # empty: the app shows "My life" in the book's language
         "naam": txt(over.get("Naam")),
         "ondertitel": txt(over.get("Ondertitel")),
         "diashowSeconden": int(over.get("Diashow seconden") or 8),

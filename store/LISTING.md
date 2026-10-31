@@ -26,11 +26,11 @@ Private by design
 • Nothing is uploaded
 
 How it works
-A family member prepares the book on a computer: fill in a simple spreadsheet with the chapters and stories, put the photos in folders, and run the free open-source tool. This creates a package that you load into the app once. The guide, worksheet and tool are free on GitHub: github.com/HerberttenHave/life-tiles
+A family member makes the book on the tablet itself: add chapters, type the stories and pick photos from the tablet. Everything stays on the tablet, and you can save a copy as a backup. For big books with hundreds of photos there is also a free open-source tool for the computer. The guide and a worksheet to plan the book are free on GitHub: github.com/HerberttenHave/life-tiles
 
 Tap "See an example" to try the app straight away with example photos.
 
-Available in English and Dutch.
+Available in English, Dutch, German, French and Spanish.
 
 **Category:** Lifestyle
 **Tags:** family, photos, seniors, memories
@@ -62,11 +62,11 @@ Privé
 • Er wordt niets geüpload
 
 Hoe het werkt
-Een familielid maakt het boek op de computer: vul een eenvoudig Excel-bestand in met de hoofdstukken en verhalen, zet de foto's in mappen en gebruik het gratis open-source hulpmiddel. Dat maakt een pakket dat je één keer in de app laadt. Het stappenplan, het werkblad en het hulpmiddel staan gratis op GitHub: github.com/HerberttenHave/life-tiles
+Een familielid maakt het boek op de tablet zelf: hoofdstukken toevoegen, de verhalen typen en foto's van de tablet kiezen. Alles blijft op de tablet, en je kunt een kopie bewaren als reserve. Voor grote boeken met honderden foto's is er ook een gratis open-source hulpmiddel voor de computer. Het stappenplan en een werkblad om het boek te plannen staan gratis op GitHub: github.com/HerberttenHave/life-tiles
 
 Tik op "Voorbeeld bekijken" om de app meteen te proberen met voorbeeldfoto's.
 
-Beschikbaar in het Engels en Nederlands.
+Beschikbaar in het Nederlands, Engels, Duits, Frans en Spaans.
 
 ## Images in this folder
 

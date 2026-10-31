@@ -217,8 +217,8 @@ button { font: inherit; color: inherit; border: 0; background: none; cursor: poi
 .fld textarea { resize: vertical; line-height: 1.45; min-height: 220px; }
 .fld input:focus, .fld textarea:focus, .mk-ph input:focus { outline: none; border-color: var(--accent); }
 .fld2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-.seg { display: flex; gap: 12px; }
-.seg button { flex: 1; padding: 16px; border-radius: 14px; background: var(--accent-soft); font-size: 26px; }
+.seg { display: flex; flex-wrap: wrap; gap: 12px; }
+.seg button { flex: 1 1 150px; padding: 16px; border-radius: 14px; background: var(--accent-soft); font-size: 26px; }
 .seg button.on { background: var(--accent); color: #fff; }
 .mkbtn { background: var(--accent-soft); border-radius: 14px; padding: 16px 22px; font-size: 24px; }
 .mk-portrait { display: flex; align-items: center; gap: 20px; }

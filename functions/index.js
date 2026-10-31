@@ -30,7 +30,10 @@ const clean = (s, max) => String(s ?? '').replace(/\s+/g, ' ').trim().slice(0, m
 // Who may be named in English books, e.g. "your children".
 const FAMILY = process.env.LIFETILES_FAMILY ?? 'your family'
 
+const LANGUAGE = { en: 'English', de: 'German', fr: 'French', es: 'Spanish' }
+
 function buildPromptEn(question, ctx) {
+  const language = LANGUAGE[ctx.taal] ?? 'English'
   const period = [ctx.van, ctx.tot].filter(Boolean).join(' to ') || 'unknown years'
   const place = [ctx.plaats, ctx.land].filter(Boolean).join(', ') || 'an unknown place'
   const who = clean(ctx.persoon, 60) || 'the owner of this book'
@@ -40,7 +43,7 @@ ${ctx.verhaal ? `What the life book says about this chapter: ${clean(ctx.verhaal
 The question, spoken aloud and written down by the tablet (it may contain recognition errors): "${clean(question, 300)}"
 
 Rules for your answer:
-- English, calm and warm. Address the person as you.
+- Answer in ${language}, calm and warm. Address the person informally and directly.
 - Focus on the time of this chapter ("When you lived there, around 1950, ..."), with at most a short comparison with today.
 - Two to four short sentences. The answer is read aloud: no lists, no brackets, no abbreviations, no web addresses, no dashes.
 - Only use facts you can confirm with Google Search. Numbers only when you find them, with "about" when rounded.
@@ -50,7 +53,7 @@ Rules for your answer:
 }
 
 export function buildPrompt(vraag, ctx) {
-  if (ctx.taal === 'en') return buildPromptEn(vraag, ctx)
+  if (ctx.taal !== 'nl') return buildPromptEn(vraag, ctx)
   const periode = [ctx.van, ctx.tot].filter(Boolean).join(' tot ') || 'onbekende jaren'
   const plek = [ctx.plaats, ctx.land].filter(Boolean).join(', ') || 'onbekende plaats'
   const wie = clean(ctx.persoon, 60) || 'de eigenaar van dit boek'
@@ -83,7 +86,7 @@ export const levensboekVraag = onRequest({ region: 'europe-west4', maxInstances:
   }
   if (req.method !== 'POST' || !ALLOWED.some((r) => r.test(origin))) { res.status(403).json({ error: 'forbidden' }); return }
   const vraag = clean(req.body?.vraag, 300)
-  const en = req.body?.context?.taal === 'en'
+  const en = req.body?.context?.taal !== 'nl'
   const say = (nl, english) => (en ? english : nl)
   if (vraag.length < 3) { res.status(400).json({ error: 'empty' }); return }
 
