@@ -47,7 +47,7 @@ Herbert ten Have
 | `docs/` | Worksheet and guide, in English and Dutch |
 | `store/` | Store listing, images and Play Store checklist |
 
-Made by Herbert ten Have for his mother when she turned 89. Free to use under the [MIT licence](LICENSE). [Privacy](https://lifetiles.web.app/privacy.html).
+Free to use under the [MIT licence](LICENSE). [Privacy](https://lifetiles.web.app/privacy.html).
 
 ---
 
