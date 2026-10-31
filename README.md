@@ -8,6 +8,16 @@
 
 Life Tiles turns the photos and life story of a parent or grandparent into a calm app for their tablet: the children, the partner, the homes, schools, work, holidays and family. With large tiles, a map, an automatic slideshow and questions that are read aloud.
 
+### Why I made it
+
+For my mother's 89th birthday I built her a tablet app with her whole life in it: photos, the places she lived, her school, work, holidays and family. Big tiles, a map, a slideshow, and it reads answers aloud.
+
+I've now made it free and open source, so you can make one for your own parents or grandparents. It works offline and the photos never leave the tablet.
+
+Soon also in the Google Play Store. Want to be a tester? [Open an issue](https://github.com/HerberttenHave/life-tiles/issues) or send me a message.
+
+Herbert ten Have
+
 ![Home screen](store/screenshot-tablet-1.png)
 
 - **Offline and private.** Photos stay on the tablet. The app online is an empty shell; you load your own package into it.
